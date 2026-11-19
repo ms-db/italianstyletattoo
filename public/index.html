@@ -54,6 +54,8 @@
     <section id="form-view" class="hidden bg-zinc-900 border border-zinc-800 rounded-2xl p-6 shadow-xl">
       <h2 class="text-lg font-bold mb-4 text-amber-400">Nuovo Appuntamento & Consenso</h2>
       <form id="booking-form" class="space-y-4">
+        
+        <!-- DATI CLIENTE -->
         <div class="grid grid-cols-2 gap-3">
           <div>
             <label class="block text-xs text-zinc-400 mb-1">Nome *</label>
@@ -76,6 +78,60 @@
           </div>
         </div>
 
+        <!-- DOCUMENTO CLIENTE -->
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs text-zinc-400 mb-1">Tipo Documento *</label>
+            <select id="doc_tipo" required class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3.5 py-2.5 text-sm focus:border-amber-500 focus:outline-none">
+              <option value="Carta d'Identità">Carta d'Identità</option>
+              <option value="Patente">Patente</option>
+              <option value="Passaporto">Passaporto</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs text-zinc-400 mb-1">N. Documento *</label>
+            <input type="text" id="doc_numero" required placeholder="AB12345CD" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3.5 py-2.5 text-sm focus:border-amber-500 focus:outline-none uppercase">
+          </div>
+        </div>
+
+        <!-- SPUNTA MINORENNE -->
+        <div class="bg-zinc-950/60 border border-zinc-800 rounded-xl p-3 flex items-center justify-between">
+          <div>
+            <span class="text-xs font-bold text-white block">Il cliente è minorenne?</span>
+            <span class="text-[11px] text-zinc-400">Richiede i dati e la firma del genitore</span>
+          </div>
+          <input type="checkbox" id="is-minorenne" onchange="toggleMinoreFields()" class="w-5 h-5 accent-amber-500 rounded cursor-pointer">
+        </div>
+
+        <!-- CAMPI GENITORE (NASCOSTI DI DEFAULT) -->
+        <div id="genitore-section" class="hidden border border-amber-500/30 bg-amber-500/5 rounded-xl p-4 space-y-3">
+          <p class="text-xs font-bold text-amber-400 uppercase tracking-wider">Dati Genitore / Tutore Legale</p>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs text-zinc-400 mb-1">Nome Genitore *</label>
+              <input type="text" id="gen_nome" placeholder="Nome" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3.5 py-2 text-sm focus:border-amber-500 focus:outline-none">
+            </div>
+            <div>
+              <label class="block text-xs text-zinc-400 mb-1">Cognome Genitore *</label>
+              <input type="text" id="gen_cognome" placeholder="Cognome" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3.5 py-2 text-sm focus:border-amber-500 focus:outline-none">
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs text-zinc-400 mb-1">Doc. Genitore *</label>
+              <select id="gen_doc_tipo" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3.5 py-2 text-sm focus:border-amber-500 focus:outline-none">
+                <option value="Carta d'Identità">Carta d'Identità</option>
+                <option value="Patente">Patente</option>
+                <option value="Passaporto">Passaporto</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs text-zinc-400 mb-1">N. Doc. Genitore *</label>
+              <input type="text" id="gen_doc_numero" placeholder="Numero" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3.5 py-2 text-sm focus:border-amber-500 focus:outline-none uppercase">
+            </div>
+          </div>
+        </div>
+
         <div class="grid grid-cols-2 gap-3">
           <div>
             <label class="block text-xs text-zinc-400 mb-1">Giorno e Ora *</label>
@@ -88,6 +144,8 @@
               <option value="Manu">Manu</option>
               <option value="Spada">Spada</option>
               <option value="Steve">Steve</option>
+              <option value="assegnare">assegnare</option>
+
             </select>
           </div>
         </div>
@@ -101,12 +159,12 @@
         <div class="border border-zinc-800 rounded-xl p-4 bg-zinc-950/40 space-y-3">
           <label class="block text-xs font-bold uppercase tracking-wider text-amber-400">Consenso Informato & Trattamento Dati</label>
           <div class="h-28 overflow-y-auto text-[11px] text-zinc-400 bg-zinc-950 p-3 rounded-lg border border-zinc-800 leading-relaxed">
-            Il sottoscritto dichiara di essere maggiorenne (o autorizzato), di non essere affetto da patologie incompatibili con l'esecuzione del tatuaggio e di sollevare lo studio da reazioni allergiche imprevedibili ai pigmenti. Autorizza inoltre il trattamento dei dati personali ai sensi del GDPR.
+            Il sottoscritto (o in qualità di genitore/tutore del minore) dichiara di essere maggiorenne ed autorizzato, di non essere affetto da patologie incompatibili con l'esecuzione del tatuaggio e di sollevare lo studio da reazioni allergiche imprevedibili ai pigmenti. Autorizza inoltre il trattamento dei dati personali ai sensi del GDPR.
           </div>
           
           <div>
             <div class="flex justify-between items-center mb-1">
-              <span class="text-xs text-zinc-300 font-medium">Firma del cliente (usa il dito o pennino):</span>
+              <span id="firma-label" class="text-xs text-zinc-300 font-medium">Firma del cliente (usa il dito o pennino):</span>
               <button type="button" onclick="clearSignature()" class="text-[11px] text-amber-400 hover:underline">Cancella firma</button>
             </div>
             <div class="border border-zinc-800 rounded-xl bg-white overflow-hidden touch-none">
@@ -152,6 +210,12 @@
             </div>
           </div>
 
+          <!-- ANTEPRIMA FIRMA NEL BIGLIETTO -->
+          <div id="ticket-signature-box" class="bg-zinc-950 border border-zinc-800 p-3 rounded-xl text-center hidden">
+            <p id="t-sig-title" class="text-[10px] text-zinc-500 uppercase tracking-wider mb-1">Firma acquisita</p>
+            <img id="t-sig-img" src="" alt="Firma" class="max-h-20 mx-auto bg-white rounded p-1 object-contain">
+          </div>
+
           <div class="pt-2 flex flex-col items-center text-center">
             <p class="text-xs text-zinc-400 mb-3">Inquadra il QR Code per salvare il promemoria</p>
             <div id="qrcode" class="bg-white p-3.5 rounded-2xl shadow-inner"></div>
@@ -187,6 +251,44 @@
       <div id="admin-list" class="space-y-3"></div>
     </section>
 
+    <!-- MODALE VISUALIZZAZIONE CONSENSO & FIRMA -->
+    <div id="modal-consenso" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+      <div class="bg-zinc-900 border border-zinc-800 rounded-3xl max-w-md w-full p-6 space-y-4 shadow-2xl max-h-[90vh] overflow-y-auto">
+        <div class="flex justify-between items-center border-b border-zinc-800 pb-3">
+          <h3 class="font-bold text-amber-400 text-sm">Modulo Consenso
+</h3>
+          <button onclick="closeConsensoModal()" class="text-zinc-400 hover:text-white text-sm px-2 py-1 bg-zinc-800 rounded-lg">✕ Chiudi</button>
+        </div>
+        <div class="space-y-2 text-xs text-zinc-300">
+          <p><strong class="text-white">Cliente:</strong> <span id="m-cliente">--</span></p>
+          <p><strong class="text-white">Documento Cliente:</strong> <span id="m-doc">--</span></p>
+          <div id="m-genitore-box" class="hidden bg-amber-500/10 border border-amber-500/20 p-2.5 rounded-xl space-y-1">
+            <p class="text-amber-400 font-bold">Autorizzazione Genitore/Tutore:</p>
+            <p><strong class="text-white">Nome:</strong> <span id="m-gen-nome">--</span></p>
+            <p><strong class="text-white">Documento:</strong> <span id="m-gen-doc">--</span></p>
+          </div>
+          <p><strong class="text-white">Data Appuntamento:</strong> <span id="m-data">--</span></p>
+          <div class="bg-zinc-950 p-3 rounded-xl border border-zinc-800 text-[11px] text-zinc-400 leading-relaxed">
+            Il sottoscritto dichiara di essere maggiorenne (o genitore/tutore autorizzato), di non essere affetto da patologie incompatibili e di sollevare lo studio da reazioni allergiche imprevedibili.
+          </div>
+        </div>
+        <div>
+          <p id="m-firma-label" class="text-[11px] text-zinc-400 mb-1 font-medium">Firma digitale:</p>
+          <div class="bg-white p-2 rounded-xl border border-zinc-800 text-center">
+            <img id="m-firma" src="" alt="Firma" class="max-h-32 mx-auto object-contain">
+          </div>
+        </div>
+        <div class="flex gap-2 pt-2">
+          <a id="m-download-btn" download="consenso-firmato.png" href="#" class="flex-1 text-center bg-zinc-800 hover:bg-zinc-700 text-white font-medium py-2.5 rounded-xl text-xs transition">
+            Scarica Immagine Firma
+          </a>
+          <button onclick="window.print()" class="flex-1 bg-amber-500 hover:bg-amber-400 text-black font-bold py-2.5 rounded-xl text-xs transition">
+            Stampa Modulo
+          </button>
+        </div>
+      </div>
+    </div>
+
   </main>
 
   <!-- SCRIPT FIREBASE -->
@@ -195,16 +297,18 @@
     import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
     import { getFirestore, collection, addDoc, getDoc, getDocs, deleteDoc, doc, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
-  apiKey: "AIzaSyBi03fdFCBpSUD8Lf5lBNw8Z-66Smse_q4",
-  authDomain: "italian-style-tattoo---card.firebaseapp.com",
-  projectId: "italian-style-tattoo---card",
-  storageBucket: "italian-style-tattoo---card.firebasestorage.app",
-  messagingSenderId: "1031758081233",
-  appId: "1:1031758081233:web:bb8448e9dc8e94813aa9f0",
-  measurementId: "G-FY4D63HYTF"
-};
+    const firebaseConfig = {
+  "name": "Italian Style Tattoo",
+  "short_name": "TattooApp",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#09090b",
+  "theme_color": "#111827",
+  "icons": [
+    { "src": "logo.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "logo.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
@@ -213,6 +317,30 @@ const firebaseConfig = {
     let allBookings = [];
     const urlParams = new URLSearchParams(window.location.search);
     const ticketIdParam = urlParams.get('ticket');
+
+    // Gestione visualizzazione campi minorenne
+    window.toggleMinoreFields = () => {
+      const isMin = document.getElementById('is-minorenne').checked;
+      const genSection = document.getElementById('genitore-section');
+      const firmaLabel = document.getElementById('firma-label');
+      const genNome = document.getElementById('gen_nome');
+      const genCognome = document.getElementById('gen_cognome');
+      const genDocNum = document.getElementById('gen_doc_numero');
+
+      if (isMin) {
+        genSection.classList.remove('hidden');
+        firmaLabel.textContent = "Firma del Genitore / Tutore (usa il dito o pennino):";
+        genNome.required = true;
+        genCognome.required = true;
+        genDocNum.required = true;
+      } else {
+        genSection.classList.add('hidden');
+        firmaLabel.textContent = "Firma del cliente (usa il dito o pennino):";
+        genNome.required = false;
+        genCognome.required = false;
+        genDocNum.required = false;
+      }
+    };
 
     // Gestione firma Canvas
     const canvas = document.getElementById('signature-pad');
@@ -307,18 +435,27 @@ const firebaseConfig = {
     document.getElementById('booking-form').addEventListener('submit', async (e) => {
       e.preventDefault();
       const btn = document.getElementById('submit-btn');
-      
-      // Controllo firma vuota
       const signatureData = canvas.toDataURL();
 
       btn.disabled = true;
       btn.textContent = "Salvataggio in corso...";
+
+      const isMinorenne = document.getElementById('is-minorenne').checked;
 
       const bookingData = {
         nome: document.getElementById('nome').value.trim(),
         cognome: document.getElementById('cognome').value.trim(),
         whatsapp: document.getElementById('whatsapp').value.trim(),
         acconto: Number(document.getElementById('acconto').value),
+        doc_tipo: document.getElementById('doc_tipo').value,
+        doc_numero: document.getElementById('doc_numero').value.trim().toUpperCase(),
+        isMinorenne: isMinorenne,
+        genitore: isMinorenne ? {
+          nome: document.getElementById('gen_nome').value.trim(),
+          cognome: document.getElementById('gen_cognome').value.trim(),
+          doc_tipo: document.getElementById('gen_doc_tipo').value,
+          doc_numero: document.getElementById('gen_doc_numero').value.trim().toUpperCase()
+        } : null,
         data_ora: document.getElementById('data_ora').value,
         tatuatore: document.getElementById('tatuatore').value,
         note: document.getElementById('note').value.trim(),
@@ -329,6 +466,8 @@ const firebaseConfig = {
       try {
         const docRef = await addDoc(collection(db, "appuntamenti"), bookingData);
         document.getElementById('booking-form').reset();
+        document.getElementById('is-minorenne').checked = false;
+        toggleMinoreFields();
         clearSignature();
         renderTicket(docRef.id, bookingData);
         showView('ticket-view');
@@ -363,6 +502,12 @@ const firebaseConfig = {
       document.getElementById('t-data').textContent = formattedDate;
       document.getElementById('t-tatuatore').textContent = data.tatuatore;
       document.getElementById('t-acconto').textContent = `€ ${data.acconto.toFixed(2)}`;
+
+      if (data.signature) {
+        document.getElementById('ticket-signature-box').classList.remove('hidden');
+        document.getElementById('t-sig-title').textContent = data.isMinorenne ? "Firma Genitore (Minorenne)" : "Firma Cliente";
+        document.getElementById('t-sig-img').src = data.signature;
+      }
 
       const ticketUrl = `${window.location.origin}${window.location.pathname}?ticket=${id}`;
       document.getElementById('t-link').value = ticketUrl;
@@ -401,15 +546,18 @@ const firebaseConfig = {
       }
       listEl.innerHTML = items.map(item => {
         const dateStr = new Date(item.data_ora).toLocaleString('it-IT', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+        const minorBadge = item.isMinorenne ? '<span class="text-xs px-2 py-0.5 rounded bg-red-500/10 text-red-400 ml-1">Minorenne</span>' : '';
         return `
           <div class="bg-zinc-900 border border-zinc-800 p-4 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
               <span class="font-bold text-white">${item.nome} ${item.cognome}</span>
               <span class="text-xs px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 ml-2">${item.tatuatore}</span>
-              <p class="text-xs text-zinc-400 mt-1">📅 ${dateStr} • Acconto: €${item.acconto}</p>
-              ${item.signature ? '<p class="text-[11px] text-emerald-400 mt-1">✓ Consenso firmato</p>' : ''}
+              ${minorBadge}
+              <p class="text-xs text-zinc-400 mt-1">📅 ${dateStr} • Acconto: €${item.acconto} • Doc: ${item.doc_tipo} (${item.doc_numero})</p>
+              ${item.signature ? '<p class="text-[11px] text-emerald-400 mt-1 cursor-pointer hover:underline" onclick="viewConsensoModal(\''+item.id+'\')">✓ Consenso firmato (Clicca per vedere)</p>' : '<p class="text-[11px] text-zinc-500 mt-1">Nessuna firma</p>'}
             </div>
-            <div class="flex gap-2">
+            <div class="flex flex-wrap gap-2">
+              ${item.signature ? `<button onclick="viewConsensoModal('${item.id}')" class="px-3 py-1.5 bg-amber-500/10 text-amber-400 hover:bg-amber-500/20 rounded-lg text-xs font-medium">Consenso</button>` : ''}
               <button onclick="openAdminTicket('${item.id}')" class="px-3 py-1.5 bg-zinc-800 hover:bg-zinc-700 rounded-lg text-xs">QR / Info</button>
               <button onclick="deleteBooking('${item.id}')" class="px-3 py-1.5 bg-red-950/60 text-red-300 rounded-lg text-xs">Elimina</button>
             </div>
@@ -422,6 +570,37 @@ const firebaseConfig = {
       const term = document.getElementById('admin-search').value.toLowerCase();
       const filtered = allBookings.filter(b => `${b.nome} ${b.cognome}`.toLowerCase().includes(term));
       renderAdminList(filtered);
+    };
+
+    window.viewConsensoModal = (id) => {
+      const found = allBookings.find(b => b.id === id);
+      if (found && found.signature) {
+        document.getElementById('m-cliente').textContent = `${found.nome} ${found.cognome}`;
+        document.getElementById('m-doc').textContent = `${found.doc_tipo} N. ${found.doc_numero}`;
+        
+        const genBox = document.getElementById('m-genitore-box');
+        if (found.isMinorenne && found.genitore) {
+          genBox.classList.remove('hidden');
+          document.getElementById('m-gen-nome').textContent = `${found.genitore.nome} ${found.genitore.cognome}`;
+          document.getElementById('m-gen-doc').textContent = `${found.genitore.doc_tipo} N. ${found.genitore.doc_numero}`;
+          document.getElementById('m-firma-label').textContent = "Firma digitale del Genitore:";
+        } else {
+          genBox.classList.add('hidden');
+          document.getElementById('m-firma-label').textContent = "Firma digitale del Cliente:";
+        }
+
+        document.getElementById('m-data').textContent = new Date(found.data_ora).toLocaleString('it-IT');
+        document.getElementById('m-firma').src = found.signature;
+        
+        const dlBtn = document.getElementById('m-download-btn');
+        dlBtn.href = found.signature;
+        dlBtn.download = `consenso-${found.cognome}-${found.nome}.png`;
+        document.getElementById('modal-consenso').classList.remove('hidden');
+      }
+    };
+
+    window.closeConsensoModal = () => {
+      document.getElementById('modal-consenso').classList.add('hidden');
     };
 
     window.openAdminTicket = (id) => {
