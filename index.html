@@ -7,6 +7,23 @@
   <link rel="manifest" href="manifest.json" />
   <meta name="theme-color" content="#111827" />
   <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root {
+      --studio-accent: #f59e0b;
+      --studio-accent-text: #000000;
+    }
+    .studio-accent-text { color: var(--studio-accent) !important; }
+    .studio-accent-border { border-color: var(--studio-accent) !important; }
+    .studio-accent-btn {
+      background-color: var(--studio-accent) !important;
+      color: var(--studio-accent-text) !important;
+    }
+    .studio-accent-btn:hover { filter: brightness(1.08); }
+    .studio-accent-badge {
+      background-color: color-mix(in srgb, var(--studio-accent) 14%, transparent) !important;
+      color: var(--studio-accent) !important;
+    }
+  </style>
   <!-- Libreria QR Code -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </head>
@@ -17,7 +34,7 @@
     <div class="max-w-3xl mx-auto px-4 py-3 flex justify-between items-center">
       <div class="flex items-center gap-3">
         <img id="nav-logo" src="logo.png" alt="Logo Studio" class="h-9 w-9 object-contain rounded bg-zinc-800 p-1" onerror="this.style.display='none'">
-        <span class="font-bold tracking-wider uppercase text-sm text-amber-400">Studio Desk</span>
+        <span class="font-bold tracking-wider uppercase text-sm studio-accent-text">Studio Desk</span>
       </div>
       <div class="flex gap-2">
         <button onclick="showView('form-view')" class="px-3 py-1.5 text-xs font-medium rounded-lg bg-zinc-800 hover:bg-zinc-700">Nuovo</button>
@@ -32,7 +49,7 @@
     <!-- 1. LOGIN -->
     <section id="login-view" class="hidden bg-zinc-900 border border-zinc-800 rounded-2xl p-6 shadow-xl mt-10">
       <div class="text-center mb-6">
-        <img src="logo.png" alt="Logo" class="h-16 mx-auto mb-3 object-contain" onerror="this.style.display='none'">
+        <img id="login-logo" src="logo.png" alt="Logo" class="h-16 mx-auto mb-3 object-contain" onerror="this.style.display='none'">
         <h1 class="text-xl font-bold">Accesso Riservato Studio</h1>
         <p class="text-xs text-zinc-400 mt-1">Inserisci le credenziali admin</p>
       </div>
@@ -46,15 +63,15 @@
           <input type="password" id="login-pass" required class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-amber-500">
         </div>
         <p id="login-error" class="text-xs text-red-400 hidden"></p>
-        <button type="submit" class="w-full bg-amber-500 hover:bg-amber-400 text-black font-bold py-3 rounded-xl transition">Accedi</button>
+        <button type="submit" class="w-full font-bold py-3 rounded-xl transition studio-accent-btn">Accedi</button>
       </form>
     </section>
 
     <!-- 2. FORM NUOVO APPUNTAMENTO -->
     <section id="form-view" class="hidden bg-zinc-900 border border-zinc-800 rounded-2xl p-6 shadow-xl">
-      <h2 class="text-lg font-bold mb-4 text-amber-400">Nuovo Appuntamento & Consenso</h2>
+      <h2 class="text-lg font-bold mb-4 studio-accent-text">Nuovo Appuntamento & Consenso</h2>
       <form id="booking-form" class="space-y-4">
-        
+
         <!-- DATI CLIENTE -->
         <div class="grid grid-cols-2 gap-3">
           <div>
@@ -105,7 +122,7 @@
 
         <!-- CAMPI GENITORE (NASCOSTI DI DEFAULT) -->
         <div id="genitore-section" class="hidden border border-amber-500/30 bg-amber-500/5 rounded-xl p-4 space-y-3">
-          <p class="text-xs font-bold text-amber-400 uppercase tracking-wider">Dati Genitore / Tutore Legale</p>
+          <p class="text-xs font-bold studio-accent-text uppercase tracking-wider">Dati Genitore / Tutore Legale</p>
           <div class="grid grid-cols-2 gap-3">
             <div>
               <label class="block text-xs text-zinc-400 mb-1">Nome Genitore *</label>
@@ -156,15 +173,15 @@
 
         <!-- SEZIONE CONSENSO INFORMATIVO & FIRMA -->
         <div class="border border-zinc-800 rounded-xl p-4 bg-zinc-950/40 space-y-3">
-          <label class="block text-xs font-bold uppercase tracking-wider text-amber-400">Consenso Informato & Trattamento Dati</label>
-          <div class="h-28 overflow-y-auto text-[11px] text-zinc-400 bg-zinc-950 p-3 rounded-lg border border-zinc-800 leading-relaxed">
+          <label class="block text-xs font-bold uppercase tracking-wider studio-accent-text">Consenso Informato & Trattamento Dati</label>
+          <div id="consenso-text" class="h-28 overflow-y-auto text-[11px] text-zinc-400 bg-zinc-950 p-3 rounded-lg border border-zinc-800 leading-relaxed">
             Il sottoscritto (o in qualità di genitore/tutore del minore) dichiara di essere maggiorenne ed autorizzato, di non essere affetto da patologie incompatibili con l'esecuzione del tatuaggio e di sollevare lo studio da reazioni allergiche imprevedibili ai pigmenti. Autorizza inoltre il trattamento dei dati personali ai sensi del GDPR.
           </div>
-          
+
           <div>
             <div class="flex justify-between items-center mb-1">
               <span id="firma-label" class="text-xs text-zinc-300 font-medium">Firma del cliente (usa il dito o pennino):</span>
-              <button type="button" onclick="clearSignature()" class="text-[11px] text-amber-400 hover:underline">Cancella firma</button>
+              <button type="button" onclick="clearSignature()" class="text-[11px] studio-accent-text hover:underline">Cancella firma</button>
             </div>
             <div class="border border-zinc-800 rounded-xl bg-white overflow-hidden touch-none">
               <canvas id="signature-pad" class="w-full h-36 cursor-crosshair"></canvas>
@@ -172,7 +189,7 @@
           </div>
         </div>
 
-        <button type="submit" id="submit-btn" class="w-full bg-amber-500 hover:bg-amber-400 text-black font-bold py-3.5 rounded-xl transition shadow-lg">
+        <button type="submit" id="submit-btn" class="w-full font-bold py-3.5 rounded-xl transition shadow-lg studio-accent-btn">
           Salva e Genera Biglietto con QR
         </button>
       </form>
@@ -183,7 +200,7 @@
       <div class="bg-zinc-900 border border-zinc-800 rounded-3xl overflow-hidden shadow-2xl">
         <div class="bg-zinc-950 p-6 text-center border-b border-dashed border-zinc-800">
           <img id="ticket-logo" src="logo.png" alt="Logo Studio" class="h-20 mx-auto mb-3 object-contain" onerror="this.style.display='none'">
-          <span class="inline-block px-3 py-1 rounded-full bg-amber-500/10 text-amber-400 text-[11px] font-bold uppercase tracking-widest">
+          <span class="inline-block px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-widest studio-accent-badge">
             Memorandum & Consenso Firmato
           </span>
           <h2 id="t-cliente" class="text-2xl font-extrabold mt-2 text-white">Nome Cognome</h2>
@@ -197,7 +214,7 @@
             </div>
             <div>
               <p class="text-[11px] uppercase tracking-wider text-zinc-500">Tatuatore</p>
-              <p id="t-tatuatore" class="font-bold text-sm text-amber-400 mt-0.5">--</p>
+              <p id="t-tatuatore" class="font-bold text-sm studio-accent-text mt-0.5">--</p>
             </div>
             <div>
               <p class="text-[11px] uppercase tracking-wider text-zinc-500">Caparra</p>
@@ -218,7 +235,7 @@
           <div class="pt-2 flex flex-col items-center text-center">
             <p class="text-xs text-zinc-400 mb-3">Inquadra il QR Code per salvare il promemoria</p>
             <div id="qrcode" class="bg-white p-3.5 rounded-2xl shadow-inner"></div>
-            
+
             <div class="w-full mt-4 flex items-center gap-2 bg-zinc-950 border border-zinc-800 rounded-xl p-2">
               <input type="text" id="t-link" readonly class="bg-transparent text-xs text-zinc-400 w-full px-2 focus:outline-none">
               <button onclick="copyTicketLink()" class="px-3 py-1.5 bg-zinc-800 hover:bg-zinc-700 text-xs font-medium rounded-lg shrink-0">Copia</button>
@@ -238,30 +255,103 @@
       </div>
     </section>
 
-    <!-- 4. ARCHIVIO ADMIN -->
+    <!-- 4. ARCHIVIO ADMIN & IMPOSTAZIONI STUDIO -->
     <section id="admin-view" class="hidden space-y-4">
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-zinc-900 border border-zinc-800 p-4 rounded-2xl">
         <div>
-          <h2 class="text-lg font-bold text-amber-400">Archivio Clienti & Firme</h2>
+          <h2 class="text-lg font-bold studio-accent-text">Pannello Studio Admin</h2>
           <p class="text-xs text-zinc-400" id="admin-count">Caricamento...</p>
         </div>
-        <input type="text" id="admin-search" onkeyup="filterAdminList()" placeholder="Cerca nome..." class="bg-zinc-950 border border-zinc-800 rounded-xl px-3.5 py-2 text-sm focus:border-amber-500 focus:outline-none">
+        <div class="flex gap-2">
+          <button type="button" id="tab-btn-bookings" onclick="switchAdminTab('bookings')" class="px-3.5 py-2 rounded-xl text-xs font-bold studio-accent-btn">
+            Appuntamenti
+          </button>
+          <button type="button" id="tab-btn-settings" onclick="switchAdminTab('settings')" class="px-3.5 py-2 rounded-xl text-xs font-medium bg-zinc-800 hover:bg-zinc-700 text-zinc-200">
+            Impostazioni Studio
+          </button>
+        </div>
       </div>
-      <div id="admin-list" class="space-y-3"></div>
+
+      <!-- TAB 1: APPUNTAMENTI -->
+      <div id="admin-tab-bookings" class="space-y-4">
+        <div class="bg-zinc-900 border border-zinc-800 p-3 rounded-2xl">
+          <input type="text" id="admin-search" onkeyup="filterAdminList()" placeholder="Cerca nome cliente..." class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3.5 py-2 text-sm focus:outline-none">
+        </div>
+        <div id="admin-list" class="space-y-3"></div>
+      </div>
+
+      <!-- TAB 2: IMPOSTAZIONI STUDIO -->
+      <div id="admin-tab-settings" class="hidden bg-zinc-900 border border-zinc-800 rounded-2xl p-6 space-y-5">
+        <div class="border-b border-zinc-800 pb-3">
+          <h3 class="text-base font-bold studio-accent-text">Personalizzazione App & Consenso</h3>
+          <p class="text-xs text-zinc-400 mt-0.5">Le modifiche vengono salvate su Firestore e applicate subito</p>
+        </div>
+
+        <!-- COLORE ACCENTO -->
+        <div class="space-y-2">
+          <label class="block text-xs font-bold text-zinc-300">Colore Principale (Accento)</label>
+          <div class="flex flex-wrap items-center gap-2">
+            <button type="button" onclick="applyAccentColor('#f59e0b', true)" class="px-3 py-1.5 rounded-lg text-xs bg-amber-500 text-black font-bold">Ambra</button>
+            <button type="button" onclick="applyAccentColor('#eab308', true)" class="px-3 py-1.5 rounded-lg text-xs bg-yellow-400 text-black font-bold">Oro</button>
+            <button type="button" onclick="applyAccentColor('#ef4444', true)" class="px-3 py-1.5 rounded-lg text-xs bg-red-500 text-white font-bold">Rosso Ink</button>
+            <button type="button" onclick="applyAccentColor('#e4e4e7', true)" class="px-3 py-1.5 rounded-lg text-xs bg-zinc-200 text-black font-bold">Argento</button>
+            <input type="color" id="set-accent-color" value="#f59e0b" onchange="applyAccentColor(this.value, false)" class="h-8 w-12 bg-zinc-950 border border-zinc-700 rounded cursor-pointer">
+          </div>
+        </div>
+
+        <!-- LOGO STUDIO -->
+        <div class="space-y-2">
+          <label class="block text-xs font-bold text-zinc-300">Logo Studio (URL o File Immagine)</label>
+          <div class="flex items-center gap-3">
+            <img id="set-logo-preview" src="logo.png" alt="Anteprima Logo" class="h-14 w-14 object-contain rounded-xl bg-zinc-950 border border-zinc-800 p-1.5" onerror="this.style.display='none'">
+            <div class="flex-1 space-y-2">
+              <input type="text" id="set-logo-url" placeholder="logo.png oppure https://..." oninput="previewLogoUrl(this.value)" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3.5 py-2 text-xs focus:outline-none">
+              <input type="file" id="set-logo-file" accept="image/*" onchange="handleLogoFileUpload(event)" class="block w-full text-xs text-zinc-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-medium file:bg-zinc-800 file:text-zinc-200 hover:file:bg-zinc-700">
+            </div>
+          </div>
+          <p class="text-[11px] text-zinc-500">Suggerimento: usa un'immagine leggera (es. &lt; 300 KB) se carichi un file diretto.</p>
+        </div>
+
+        <!-- TATUATORI -->
+        <div>
+          <label class="block text-xs font-bold text-zinc-300 mb-1">Tatuatori (separati da virgola)</label>
+          <input type="text" id="set-tatuatori" placeholder="Lorenzo, Manu, Spada, Steve, assegnare" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none">
+        </div>
+
+        <!-- TESTO CONSENSO -->
+        <div>
+          <label class="block text-xs font-bold text-zinc-300 mb-1">Testo Consenso Informato & GDPR</label>
+          <textarea id="set-consenso-text" rows="4" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3.5 py-2.5 text-xs leading-relaxed focus:outline-none"></textarea>
+        </div>
+
+        <!-- MESSAGGIO WHATSAPP -->
+        <div>
+          <label class="block text-xs font-bold text-zinc-300 mb-1">Modello Messaggio WhatsApp</label>
+          <textarea id="set-wa-template" rows="4" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3.5 py-2.5 text-xs leading-relaxed focus:outline-none"></textarea>
+          <p class="text-[11px] text-zinc-500 mt-1">Variabili disponibili: <code class="text-zinc-300">{nome}</code>, <code class="text-zinc-300">{data}</code>, <code class="text-zinc-300">{tatuatore}</code>, <code class="text-zinc-300">{acconto}</code>, <code class="text-zinc-300">{link}</code></p>
+        </div>
+
+        <div class="flex items-center justify-between gap-3 pt-2">
+          <span id="settings-status" class="text-xs text-emerald-400 hidden">✓ Impostazioni salvate!</span>
+          <button type="button" onclick="saveStudioSettings()" class="ml-auto px-5 py-3 rounded-xl text-xs font-bold studio-accent-btn transition">
+            Salva Impostazioni Studio
+          </button>
+        </div>
+      </div>
     </section>
 
     <!-- MODALE VISUALIZZAZIONE CONSENSO & FIRMA -->
     <div id="modal-consenso" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
       <div class="bg-zinc-900 border border-zinc-800 rounded-3xl max-w-md w-full p-6 space-y-4 shadow-2xl max-h-[90vh] overflow-y-auto">
         <div class="flex justify-between items-center border-b border-zinc-800 pb-3">
-          <h3 class="font-bold text-amber-400 text-sm">Modulo Consenso Firmato</h3>
+          <h3 class="font-bold studio-accent-text text-sm">Modulo Consenso Firmato</h3>
           <button onclick="closeConsensoModal()" class="text-zinc-400 hover:text-white text-sm px-2 py-1 bg-zinc-800 rounded-lg">✕ Chiudi</button>
         </div>
         <div class="space-y-2 text-xs text-zinc-300">
           <p><strong class="text-white">Cliente:</strong> <span id="m-cliente">--</span></p>
           <p><strong class="text-white">Documento Cliente:</strong> <span id="m-doc">--</span></p>
           <div id="m-genitore-box" class="hidden bg-amber-500/10 border border-amber-500/20 p-2.5 rounded-xl space-y-1">
-            <p class="text-amber-400 font-bold">Autorizzazione Genitore/Tutore:</p>
+            <p class="studio-accent-text font-bold">Autorizzazione Genitore/Tutore:</p>
             <p><strong class="text-white">Nome:</strong> <span id="m-gen-nome">--</span></p>
             <p><strong class="text-white">Documento:</strong> <span id="m-gen-doc">--</span></p>
           </div>
@@ -280,7 +370,7 @@
           <a id="m-download-btn" download="consenso-firmato.png" href="#" class="flex-1 text-center bg-zinc-800 hover:bg-zinc-700 text-white font-medium py-2.5 rounded-xl text-xs transition">
             Scarica Immagine Firma
           </a>
-          <button onclick="window.print()" class="flex-1 bg-amber-500 hover:bg-amber-400 text-black font-bold py-2.5 rounded-xl text-xs transition">
+          <button onclick="window.print()" class="flex-1 font-bold py-2.5 rounded-xl text-xs transition studio-accent-btn">
             Stampa Modulo
           </button>
         </div>
@@ -293,7 +383,7 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-    import { getFirestore, collection, addDoc, getDoc, getDocs, deleteDoc, doc, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, getDoc, getDocs, setDoc, deleteDoc, doc, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
     // For Firebase JS SDK v7.20.0 and later, measurementId is optional
     const firebaseConfig = {
@@ -313,6 +403,147 @@
     let allBookings = [];
     const urlParams = new URLSearchParams(window.location.search);
     const ticketIdParam = urlParams.get('ticket');
+
+    const DEFAULT_SETTINGS = {
+      coloreAccento: "#f59e0b",
+      logoUrl: "logo.png",
+      tatuatori: ["Lorenzo", "Manu", "Spada", "Steve", "assegnare"],
+      testoConsenso: "Il sottoscritto (o in qualità di genitore/tutore del minore) dichiara di essere maggiorenne ed autorizzato, di non essere affetto da patologie incompatibili con l'esecuzione del tatuaggio e di sollevare lo studio da reazioni allergiche imprevedibili ai pigmenti. Autorizza inoltre il trattamento dei dati personali ai sensi del GDPR.",
+      messaggioWhatsApp: "Ciao {nome}! Ecco il promemoria e consenso del tuo appuntamento:\n📅 {data}\n🖋️ Tatuatore: {tatuatore}\n💶 Acconto: €{acconto}\n\n🔗 {link}"
+    };
+
+    let studioSettings = { ...DEFAULT_SETTINGS };
+
+    function isLightColor(hex) {
+      const clean = (hex || "#f59e0b").replace("#", "");
+      if (clean.length !== 6) return true;
+      const r = parseInt(clean.slice(0, 2), 16);
+      const g = parseInt(clean.slice(2, 4), 16);
+      const b = parseInt(clean.slice(4, 6), 16);
+      const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+      return luminance > 0.55;
+    }
+
+    window.applyAccentColor = (hex, syncPicker = false) => {
+      const color = hex || "#f59e0b";
+      studioSettings.coloreAccento = color;
+      document.documentElement.style.setProperty("--studio-accent", color);
+      document.documentElement.style.setProperty("--studio-accent-text", isLightColor(color) ? "#000000" : "#ffffff");
+      if (syncPicker) {
+        const picker = document.getElementById("set-accent-color");
+        if (picker) picker.value = color;
+      }
+    };
+
+    function applyLogoSrc(url) {
+      const src = (url && url.trim()) ? url.trim() : "logo.png";
+      studioSettings.logoUrl = src;
+      ["nav-logo", "login-logo", "ticket-logo", "set-logo-preview"].forEach(id => {
+        const img = document.getElementById(id);
+        if (img) {
+          img.style.display = "";
+          img.src = src;
+        }
+      });
+    }
+
+    function applyArtistsList(list) {
+      const artists = Array.isArray(list) && list.length ? list : DEFAULT_SETTINGS.tatuatori;
+      studioSettings.tatuatori = artists;
+      const select = document.getElementById("tatuatore");
+      if (select) {
+        select.innerHTML = artists.map(name => `<option value="${name}">${name}</option>`).join("");
+      }
+    }
+
+    function applyStudioSettingsToUI(settings) {
+      const merged = { ...DEFAULT_SETTINGS, ...settings };
+      studioSettings = merged;
+      applyAccentColor(merged.coloreAccento, true);
+      applyLogoSrc(merged.logoUrl);
+      applyArtistsList(merged.tatuatori);
+
+      const consensoEl = document.getElementById("consenso-text");
+      if (consensoEl) consensoEl.textContent = merged.testoConsenso;
+
+      const setLogoUrl = document.getElementById("set-logo-url");
+      const setArtists = document.getElementById("set-tatuatori");
+      const setConsenso = document.getElementById("set-consenso-text");
+      const setWa = document.getElementById("set-wa-template");
+
+      if (setLogoUrl) setLogoUrl.value = merged.logoUrl;
+      if (setArtists) setArtists.value = merged.tatuatori.join(", ");
+      if (setConsenso) setConsenso.value = merged.testoConsenso;
+      if (setWa) setWa.value = merged.messaggioWhatsApp;
+    }
+
+    async function loadStudioSettings() {
+      applyStudioSettingsToUI(DEFAULT_SETTINGS);
+      try {
+        const snap = await getDoc(doc(db, "impostazioni", "studio_config"));
+        if (snap.exists()) {
+          applyStudioSettingsToUI(snap.data());
+        }
+      } catch (err) {
+        console.warn("Uso impostazioni predefinite:", err.message);
+      }
+    }
+
+    window.previewLogoUrl = (val) => applyLogoSrc(val);
+
+    window.handleLogoFileUpload = (event) => {
+      const file = event.target.files?.[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        const base64 = String(reader.result || "");
+        document.getElementById("set-logo-url").value = base64;
+        applyLogoSrc(base64);
+      };
+      reader.readAsDataURL(file);
+    };
+
+    window.switchAdminTab = (tab) => {
+      const isBookings = tab === "bookings";
+      document.getElementById("admin-tab-bookings").classList.toggle("hidden", !isBookings);
+      document.getElementById("admin-tab-settings").classList.toggle("hidden", isBookings);
+
+      const btnBookings = document.getElementById("tab-btn-bookings");
+      const btnSettings = document.getElementById("tab-btn-settings");
+
+      btnBookings.className = isBookings
+        ? "px-3.5 py-2 rounded-xl text-xs font-bold studio-accent-btn"
+        : "px-3.5 py-2 rounded-xl text-xs font-medium bg-zinc-800 hover:bg-zinc-700 text-zinc-200";
+
+      btnSettings.className = !isBookings
+        ? "px-3.5 py-2 rounded-xl text-xs font-bold studio-accent-btn"
+        : "px-3.5 py-2 rounded-xl text-xs font-medium bg-zinc-800 hover:bg-zinc-700 text-zinc-200";
+    };
+
+    window.saveStudioSettings = async () => {
+      const statusEl = document.getElementById("settings-status");
+      const artistsRaw = document.getElementById("set-tatuatori").value;
+      const artistsArray = artistsRaw.split(",").map(s => s.trim()).filter(Boolean);
+
+      const payload = {
+        coloreAccento: document.getElementById("set-accent-color").value,
+        logoUrl: document.getElementById("set-logo-url").value.trim() || "logo.png",
+        tatuatori: artistsArray.length ? artistsArray : DEFAULT_SETTINGS.tatuatori,
+        testoConsenso: document.getElementById("set-consenso-text").value.trim() || DEFAULT_SETTINGS.testoConsenso,
+        messaggioWhatsApp: document.getElementById("set-wa-template").value.trim() || DEFAULT_SETTINGS.messaggioWhatsApp,
+        updatedAt: serverTimestamp()
+      };
+
+      try {
+        await setDoc(doc(db, "impostazioni", "studio_config"), payload, { merge: true });
+        applyStudioSettingsToUI(payload);
+        statusEl.textContent = "✓ Impostazioni salvate su Firestore!";
+        statusEl.classList.remove("hidden");
+        setTimeout(() => statusEl.classList.add("hidden"), 3000);
+      } catch (err) {
+        alert("Errore salvataggio impostazioni: " + err.message);
+      }
+    };
 
     // Gestione visualizzazione campi minorenne
     window.toggleMinoreFields = () => {
@@ -387,6 +618,8 @@
       ctx.clearRect(0, 0, canvas.width, canvas.height);
     };
 
+    loadStudioSettings();
+
     if (ticketIdParam) {
       loadPublicTicket(ticketIdParam);
     } else {
@@ -408,7 +641,10 @@
         document.getElementById(id).classList.add('hidden');
       });
       document.getElementById(viewId).classList.remove('hidden');
-      if (viewId === 'admin-view') loadAdminBookings();
+      if (viewId === 'admin-view') {
+        switchAdminTab('bookings');
+        loadAdminBookings();
+      }
       if (viewId === 'form-view') setTimeout(resizeCanvas, 100);
     };
 
@@ -513,7 +749,13 @@
       new QRCode(qrContainer, { text: ticketUrl, width: 190, height: 190 });
 
       const cleanPhone = data.whatsapp.replace(/[^0-9]/g, '');
-      const message = `Ciao ${data.nome}! Ecco il promemoria e consenso del tuo appuntamento:\n📅 ${formattedDate}\n🖋️ Tatuatore: ${data.tatuatore}\n💶 Acconto: €${data.acconto}\n\n🔗 ${ticketUrl}`;
+      const template = studioSettings.messaggioWhatsApp || DEFAULT_SETTINGS.messaggioWhatsApp;
+      const message = template
+        .replaceAll("{nome}", data.nome)
+        .replaceAll("{data}", formattedDate)
+        .replaceAll("{tatuatore}", data.tatuatore)
+        .replaceAll("{acconto}", String(data.acconto))
+        .replaceAll("{link}", ticketUrl);
       document.getElementById('wa-share-btn').href = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(message)}`;
     }
 
@@ -547,13 +789,13 @@
           <div class="bg-zinc-900 border border-zinc-800 p-4 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
               <span class="font-bold text-white">${item.nome} ${item.cognome}</span>
-              <span class="text-xs px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 ml-2">${item.tatuatore}</span>
+              <span class="text-xs px-2 py-0.5 rounded ml-2 studio-accent-badge">${item.tatuatore}</span>
               ${minorBadge}
               <p class="text-xs text-zinc-400 mt-1">📅 ${dateStr} • Acconto: €${item.acconto} • Doc: ${item.doc_tipo} (${item.doc_numero})</p>
               ${item.signature ? '<p class="text-[11px] text-emerald-400 mt-1 cursor-pointer hover:underline" onclick="viewConsensoModal(\''+item.id+'\')">✓ Consenso firmato (Clicca per vedere)</p>' : '<p class="text-[11px] text-zinc-500 mt-1">Nessuna firma</p>'}
             </div>
             <div class="flex flex-wrap gap-2">
-              ${item.signature ? `<button onclick="viewConsensoModal('${item.id}')" class="px-3 py-1.5 bg-amber-500/10 text-amber-400 hover:bg-amber-500/20 rounded-lg text-xs font-medium">Consenso</button>` : ''}
+              ${item.signature ? `<button onclick="viewConsensoModal('${item.id}')" class="px-3 py-1.5 rounded-lg text-xs font-medium studio-accent-badge">Consenso</button>` : ''}
               <button onclick="openAdminTicket('${item.id}')" class="px-3 py-1.5 bg-zinc-800 hover:bg-zinc-700 rounded-lg text-xs">QR / Info</button>
               <button onclick="deleteBooking('${item.id}')" class="px-3 py-1.5 bg-red-950/60 text-red-300 rounded-lg text-xs">Elimina</button>
             </div>
@@ -573,7 +815,7 @@
       if (found && found.signature) {
         document.getElementById('m-cliente').textContent = `${found.nome} ${found.cognome}`;
         document.getElementById('m-doc').textContent = `${found.doc_tipo} N. ${found.doc_numero}`;
-        
+
         const genBox = document.getElementById('m-genitore-box');
         if (found.isMinorenne && found.genitore) {
           genBox.classList.remove('hidden');
@@ -587,7 +829,7 @@
 
         document.getElementById('m-data').textContent = new Date(found.data_ora).toLocaleString('it-IT');
         document.getElementById('m-firma').src = found.signature;
-        
+
         const dlBtn = document.getElementById('m-download-btn');
         dlBtn.href = found.signature;
         dlBtn.download = `consenso-${found.cognome}-${found.nome}.png`;
