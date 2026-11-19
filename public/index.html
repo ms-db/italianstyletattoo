@@ -297,18 +297,16 @@
     import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
     import { getFirestore, collection, addDoc, getDoc, getDocs, deleteDoc, doc, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-    const firebaseConfig = {
-  "name": "Italian Style Tattoo",
-  "short_name": "TattooApp",
-  "start_url": "./index.html",
-  "display": "standalone",
-  "background_color": "#09090b",
-  "theme_color": "#111827",
-  "icons": [
-    { "src": "logo.png", "sizes": "192x192", "type": "image/png" },
-    { "src": "logo.png", "sizes": "512x512", "type": "image/png" }
-  ]
-}
+    const firebaseConfig = // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyBi03fdFCBpSUD8Lf5lBNw8Z-66Smse_q4",
+  authDomain: "italian-style-tattoo---card.firebaseapp.com",
+  projectId: "italian-style-tattoo---card",
+  storageBucket: "italian-style-tattoo---card.firebasestorage.app",
+  messagingSenderId: "1031758081233",
+  appId: "1:1031758081233:web:bb8448e9dc8e94813aa9f0",
+  measurementId: "G-FY4D63HYTF"
+};
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
