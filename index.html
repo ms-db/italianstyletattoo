@@ -4,7 +4,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Italian Style Tattoo - Prenotazioni & Consenso</title>
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
   <link rel="manifest" href="manifest.json" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta id="meta-theme-color" name="theme-color" content="#09090b" />
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
@@ -12,7 +16,7 @@
       --studio-accent: #f59e0b;
       --studio-accent-text: #000000;
       --bg-page: #09090b;
-      --bg-nav: rgba(24, 24, 27, 0.85);
+      --bg-nav: rgba(24, 24, 27, 0.88);
       --bg-surface: #18181b;
       --bg-elevated: #09090b;
       --bg-soft: rgba(9, 9, 11, 0.65);
@@ -27,7 +31,7 @@
 
     html[data-theme="light"] {
       --bg-page: #f4f4f5;
-      --bg-nav: rgba(255, 255, 255, 0.88);
+      --bg-nav: rgba(255, 255, 255, 0.9);
       --bg-surface: #ffffff;
       --bg-elevated: #f8fafc;
       --bg-soft: #f1f5f9;
@@ -117,18 +121,44 @@
 </head>
 <body class="studio-page min-h-screen font-sans transition-colors duration-200">
 
-  <!-- NAVBAR -->
-  <nav id="studio-nav" class="hidden border-b backdrop-blur sticky top-0 z-10 studio-nav">
-    <div class="max-w-3xl mx-auto px-4 py-3 flex justify-between items-center gap-2">
-      <button type="button" onclick="showView('home-view')" class="flex items-center gap-2.5 text-left">
-        <img id="nav-logo" src="logo.png" alt="Logo Studio" class="h-9 w-9 object-contain rounded p-1 studio-chip" onerror="this.style.display='none'">
-        <span id="nav-studio-name" class="font-bold tracking-wider uppercase text-xs sm:text-sm studio-accent-text truncate max-w-[140px] sm:max-w-xs">Studio Desk</span>
+  <!-- NAVBAR CON MENU A TENDINA -->
+  <nav id="studio-nav" class="hidden border-b backdrop-blur sticky top-0 z-20 studio-nav">
+    <div class="max-w-3xl mx-auto px-4 py-3 flex justify-between items-center gap-3">
+      <button type="button" onclick="showView('home-view')" class="flex items-center gap-2.5 text-left min-w-0">
+        <img id="nav-logo" src="logo.png" alt="Logo Studio" class="h-9 w-9 object-contain rounded p-1 shrink-0 studio-chip" onerror="this.style.display='none'">
+        <span id="nav-studio-name" class="font-bold tracking-wider uppercase text-xs sm:text-sm studio-accent-text truncate">Studio Desk</span>
       </button>
-      <div class="flex flex-wrap gap-1.5 sm:gap-2">
-        <button onclick="showView('home-view')" class="px-2.5 sm:px-3 py-1.5 text-xs font-medium rounded-lg studio-chip">Home</button>
-        <button onclick="showView('form-view')" class="px-2.5 sm:px-3 py-1.5 text-xs font-bold rounded-lg studio-accent-btn">+ Nuovo</button>
-        <button onclick="showView('admin-view')" class="px-2.5 sm:px-3 py-1.5 text-xs font-medium rounded-lg studio-chip">Archivio</button>
-        <button onclick="logoutAdmin()" class="px-2.5 sm:px-3 py-1.5 text-xs font-medium rounded-lg bg-red-600/15 text-red-500 hover:bg-red-600/25">Esci</button>
+
+      <!-- DROPDOWN MENU -->
+      <div class="relative shrink-0" id="nav-dropdown-wrapper">
+        <button type="button" id="nav-menu-btn" onclick="toggleNavMenu(event)" aria-expanded="false" class="px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-2 shadow-sm studio-accent-btn transition">
+          <span>Menu</span>
+          <span id="nav-menu-arrow" class="text-[10px]">▾</span>
+        </button>
+
+        <div id="nav-dropdown-menu" class="hidden absolute right-0 mt-2 w-56 rounded-2xl border shadow-2xl p-1.5 z-30 studio-card">
+          <button type="button" onclick="selectNavAction('home')" class="w-full text-left px-3.5 py-2.5 rounded-xl text-xs font-medium flex items-center justify-between studio-chip">
+            <span>Home Studio</span>
+            <span class="studio-faint">⌂</span>
+          </button>
+          <button type="button" onclick="selectNavAction('form')" class="w-full text-left px-3.5 py-2.5 rounded-xl text-xs font-bold flex items-center justify-between mt-1 studio-accent-badge">
+            <span>+ Nuovo Appuntamento</span>
+            <span>→</span>
+          </button>
+          <button type="button" onclick="selectNavAction('bookings')" class="w-full text-left px-3.5 py-2.5 rounded-xl text-xs font-medium flex items-center justify-between mt-1 studio-chip">
+            <span>Archivio & Filtri</span>
+            <span class="studio-faint">☰</span>
+          </button>
+          <button type="button" onclick="selectNavAction('settings')" class="w-full text-left px-3.5 py-2.5 rounded-xl text-xs font-medium flex items-center justify-between mt-1 studio-chip">
+            <span>Impostazioni Studio</span>
+            <span class="studio-faint">⚙</span>
+          </button>
+          <div class="border-t my-1.5 studio-divider"></div>
+          <button type="button" onclick="selectNavAction('logout')" class="w-full text-left px-3.5 py-2.5 rounded-xl text-xs font-semibold flex items-center justify-between bg-red-600/15 text-red-500 hover:bg-red-600/25">
+            <span>Esci dall'Area Admin</span>
+            <span>⎋</span>
+          </button>
+        </div>
       </div>
     </div>
   </nav>
@@ -615,6 +645,44 @@
     let studioSettings = { ...DEFAULT_SETTINGS };
     const systemThemeQuery = window.matchMedia("(prefers-color-scheme: dark)");
 
+    // Gestione menu a tendina navbar
+    function closeNavMenu() {
+      const menu = document.getElementById("nav-dropdown-menu");
+      const btn = document.getElementById("nav-menu-btn");
+      const arrow = document.getElementById("nav-menu-arrow");
+      if (menu) menu.classList.add("hidden");
+      if (btn) btn.setAttribute("aria-expanded", "false");
+      if (arrow) arrow.textContent = "▾";
+    }
+
+    window.toggleNavMenu = (event) => {
+      if (event) event.stopPropagation();
+      const menu = document.getElementById("nav-dropdown-menu");
+      const btn = document.getElementById("nav-menu-btn");
+      const arrow = document.getElementById("nav-menu-arrow");
+      if (!menu) return;
+      const willOpen = menu.classList.contains("hidden");
+      menu.classList.toggle("hidden", !willOpen);
+      if (btn) btn.setAttribute("aria-expanded", String(willOpen));
+      if (arrow) arrow.textContent = willOpen ? "▴" : "▾";
+    };
+
+    document.addEventListener("click", (event) => {
+      const wrapper = document.getElementById("nav-dropdown-wrapper");
+      if (wrapper && !wrapper.contains(event.target)) {
+        closeNavMenu();
+      }
+    });
+
+    window.selectNavAction = (action) => {
+      closeNavMenu();
+      if (action === "home") showView("home-view");
+      else if (action === "form") showView("form-view");
+      else if (action === "bookings") openAdminSection("bookings");
+      else if (action === "settings") openAdminSection("settings");
+      else if (action === "logout") logoutAdmin();
+    };
+
     function resolveEffectiveTheme(mode) {
       if (mode === "light" || mode === "dark") return mode;
       return systemThemeQuery.matches ? "dark" : "light";
@@ -886,7 +954,6 @@
       return offscreen.toDataURL('image/png');
     }
 
-    // Helper date locali YYYY-MM-DDTHH:MM per query Firestore
     function pad2(n) {
       return String(n).padStart(2, '0');
     }
@@ -924,7 +991,6 @@
       return { start: null, end: null };
     }
 
-    // Caricamento appuntamenti di OGGI per la Home (consuma pochissime letture Firestore)
     window.loadHomeTodayBookings = async () => {
       const summaryEl = document.getElementById('home-today-summary');
       const listEl = document.getElementById('home-today-list');
@@ -996,6 +1062,7 @@
           document.getElementById('staff-back-btn').classList.remove('hidden');
           showView('home-view');
         } else {
+          closeNavMenu();
           document.getElementById('studio-nav').classList.add('hidden');
           showView('login-view');
         }
@@ -1003,6 +1070,7 @@
     }
 
     window.showView = (viewId) => {
+      closeNavMenu();
       ['login-view', 'home-view', 'form-view', 'ticket-view', 'admin-view'].forEach(id => {
         document.getElementById(id).classList.add('hidden');
       });
