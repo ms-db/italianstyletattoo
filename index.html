@@ -119,26 +119,27 @@
 
   <!-- NAVBAR -->
   <nav id="studio-nav" class="hidden border-b backdrop-blur sticky top-0 z-10 studio-nav">
-    <div class="max-w-3xl mx-auto px-4 py-3 flex justify-between items-center">
-      <div class="flex items-center gap-3">
+    <div class="max-w-3xl mx-auto px-4 py-3 flex justify-between items-center gap-2">
+      <button type="button" onclick="showView('home-view')" class="flex items-center gap-2.5 text-left">
         <img id="nav-logo" src="logo.png" alt="Logo Studio" class="h-9 w-9 object-contain rounded p-1 studio-chip" onerror="this.style.display='none'">
-        <span class="font-bold tracking-wider uppercase text-sm studio-accent-text">Studio Desk</span>
-      </div>
-      <div class="flex gap-2">
-        <button onclick="showView('form-view')" class="px-3 py-1.5 text-xs font-medium rounded-lg studio-chip">Nuovo</button>
-        <button onclick="showView('admin-view')" class="px-3 py-1.5 text-xs font-medium rounded-lg studio-chip">Archivio Admin</button>
-        <button onclick="logoutAdmin()" class="px-3 py-1.5 text-xs font-medium rounded-lg bg-red-600/15 text-red-500 hover:bg-red-600/25">Esci</button>
+        <span id="nav-studio-name" class="font-bold tracking-wider uppercase text-xs sm:text-sm studio-accent-text truncate max-w-[140px] sm:max-w-xs">Studio Desk</span>
+      </button>
+      <div class="flex flex-wrap gap-1.5 sm:gap-2">
+        <button onclick="showView('home-view')" class="px-2.5 sm:px-3 py-1.5 text-xs font-medium rounded-lg studio-chip">Home</button>
+        <button onclick="showView('form-view')" class="px-2.5 sm:px-3 py-1.5 text-xs font-bold rounded-lg studio-accent-btn">+ Nuovo</button>
+        <button onclick="showView('admin-view')" class="px-2.5 sm:px-3 py-1.5 text-xs font-medium rounded-lg studio-chip">Archivio</button>
+        <button onclick="logoutAdmin()" class="px-2.5 sm:px-3 py-1.5 text-xs font-medium rounded-lg bg-red-600/15 text-red-500 hover:bg-red-600/25">Esci</button>
       </div>
     </div>
   </nav>
 
-  <main class="max-w-xl mx-auto p-4 pt-6">
+  <main class="max-w-xl mx-auto p-4 pt-6 pb-12">
 
     <!-- 1. LOGIN -->
     <section id="login-view" class="hidden border rounded-2xl p-6 shadow-xl mt-10 studio-card">
       <div class="text-center mb-6">
         <img id="login-logo" src="logo.png" alt="Logo" class="h-16 mx-auto mb-3 object-contain" onerror="this.style.display='none'">
-        <h1 class="text-xl font-bold studio-strong">Accesso Riservato Studio</h1>
+        <h1 id="login-studio-title" class="text-xl font-bold studio-strong">Accesso Riservato Studio</h1>
         <p class="text-xs studio-muted mt-1">Inserisci le credenziali admin</p>
       </div>
       <form id="login-form" class="space-y-4">
@@ -155,9 +156,64 @@
       </form>
     </section>
 
+    <!-- 1B. HOME DI FACCIATA (STUDIO DESK) -->
+    <section id="home-view" class="hidden space-y-5">
+      <!-- HERO IDENTITÀ STUDIO -->
+      <div class="border rounded-3xl p-6 text-center shadow-xl studio-card space-y-3">
+        <img id="home-logo" src="logo.png" alt="Logo Studio" class="h-24 mx-auto object-contain" onerror="this.style.display='none'">
+        <div>
+          <span id="home-today-date" class="inline-block px-3 py-1 rounded-full text-[11px] font-semibold uppercase tracking-wider studio-accent-badge">
+            --
+          </span>
+          <h1 id="home-studio-name" class="text-2xl font-extrabold mt-2 studio-strong">Italian Style Tattoo</h1>
+          <p id="home-studio-subtitle" class="text-xs studio-muted mt-1">Accoglienza clienti, consenso digitale e promemoria appuntamenti</p>
+        </div>
+      </div>
+
+      <!-- AZIONI RAPIDE -->
+      <div class="space-y-3">
+        <button type="button" onclick="showView('form-view')" class="w-full p-5 rounded-2xl shadow-lg transition flex items-center justify-between text-left studio-accent-btn">
+          <div>
+            <span class="block text-base font-extrabold">+ Nuovo Appuntamento & Consenso</span>
+            <span class="block text-xs opacity-85 mt-0.5">Registra cliente, acquisisci firma e genera QR</span>
+          </div>
+          <span class="text-2xl font-bold">→</span>
+        </button>
+
+        <div class="grid grid-cols-2 gap-3">
+          <button type="button" onclick="openAdminSection('bookings')" class="border rounded-2xl p-4 text-left transition hover:brightness-105 studio-card">
+            <span class="text-xs font-bold uppercase tracking-wider studio-accent-text block">Archivio</span>
+            <span class="text-sm font-bold studio-strong block mt-1">Appuntamenti & Firme</span>
+            <span class="text-[11px] studio-muted block mt-0.5">Filtra per periodo e tatuatore</span>
+          </button>
+
+          <button type="button" onclick="openAdminSection('settings')" class="border rounded-2xl p-4 text-left transition hover:brightness-105 studio-card">
+            <span class="text-xs font-bold uppercase tracking-wider studio-accent-text block">Configura</span>
+            <span class="text-sm font-bold studio-strong block mt-1">Impostazioni Studio</span>
+            <span class="text-[11px] studio-muted block mt-0.5">Tema, colori, staff e testi</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- RIEPILOGO OGGI IN STUDIO -->
+      <div class="border rounded-2xl p-5 space-y-3 studio-card">
+        <div class="flex items-center justify-between border-b pb-3 studio-divider">
+          <div>
+            <h2 class="text-sm font-bold studio-strong uppercase tracking-wider">Oggi in Studio</h2>
+            <p id="home-today-summary" class="text-xs studio-muted mt-0.5">Caricamento agenda di oggi...</p>
+          </div>
+          <button type="button" onclick="loadHomeTodayBookings()" class="px-2.5 py-1 rounded-lg text-[11px] font-medium studio-chip">Aggiorna</button>
+        </div>
+        <div id="home-today-list" class="space-y-2.5"></div>
+      </div>
+    </section>
+
     <!-- 2. FORM NUOVO APPUNTAMENTO -->
     <section id="form-view" class="hidden border rounded-2xl p-6 shadow-xl studio-card">
-      <h2 class="text-lg font-bold mb-4 studio-accent-text">Nuovo Appuntamento & Consenso</h2>
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-lg font-bold studio-accent-text">Nuovo Appuntamento & Consenso</h2>
+        <button type="button" onclick="showView('home-view')" class="text-xs studio-muted hover:underline">← Home</button>
+      </div>
       <form id="booking-form" class="space-y-4">
 
         <!-- DATI CLIENTE -->
@@ -336,9 +392,12 @@
         </div>
       </div>
 
-      <div id="staff-back-btn" class="hidden mt-4 text-center">
-        <button onclick="showView('form-view')" class="text-xs studio-muted hover:underline">
-          ← Torna all'inserimento nuovo cliente
+      <div id="staff-back-btn" class="hidden mt-4 flex justify-center gap-4">
+        <button onclick="showView('home-view')" class="text-xs studio-muted hover:underline">
+          ← Torna alla Home
+        </button>
+        <button onclick="showView('form-view')" class="text-xs studio-accent-text hover:underline">
+          + Nuovo cliente
         </button>
       </div>
     </section>
@@ -360,11 +419,46 @@
         </div>
       </div>
 
-      <!-- TAB 1: APPUNTAMENTI -->
-      <div id="admin-tab-bookings" class="space-y-4">
-        <div class="border p-3 rounded-2xl studio-card">
-          <input type="text" id="admin-search" onkeyup="filterAdminList()" placeholder="Cerca nome cliente..." class="w-full border rounded-xl px-3.5 py-2 text-sm focus:outline-none studio-input">
+      <!-- TAB 1: APPUNTAMENTI CON FILTRI -->
+      <div id="admin-tab-bookings" class="space-y-3">
+        <div class="border p-4 rounded-2xl space-y-3 studio-card">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+            <div>
+              <label class="block text-[11px] studio-muted mb-1">Periodo appuntamenti</label>
+              <select id="filter-period" onchange="handlePeriodFilterChange()" class="w-full border rounded-xl px-3 py-2 text-xs focus:outline-none studio-input">
+                <option value="month" selected>Questo mese</option>
+                <option value="today">Solo oggi</option>
+                <option value="week">Questa settimana</option>
+                <option value="custom">Intervallo date personalizzato</option>
+                <option value="recent50">Ultimi 50 inseriti</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-[11px] studio-muted mb-1">Tatuatore</label>
+              <select id="filter-artist" onchange="applyAdminFilters()" class="w-full border rounded-xl px-3 py-2 text-xs focus:outline-none studio-input">
+                <option value="ALL">Tutti i tatuatori</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- INTERVALLO DATE PERSONALIZZATO -->
+          <div id="custom-date-range" class="hidden grid grid-cols-2 gap-2.5 pt-1">
+            <div>
+              <label class="block text-[11px] studio-muted mb-1">Dal giorno</label>
+              <input type="date" id="filter-date-from" onchange="loadAdminBookings()" class="w-full border rounded-xl px-3 py-1.5 text-xs focus:outline-none studio-input">
+            </div>
+            <div>
+              <label class="block text-[11px] studio-muted mb-1">Al giorno</label>
+              <input type="date" id="filter-date-to" onchange="loadAdminBookings()" class="w-full border rounded-xl px-3 py-1.5 text-xs focus:outline-none studio-input">
+            </div>
+          </div>
+
+          <div class="flex gap-2">
+            <input type="text" id="admin-search" onkeyup="applyAdminFilters()" placeholder="Cerca per nome o cognome cliente..." class="w-full border rounded-xl px-3.5 py-2 text-sm focus:outline-none studio-input">
+            <button type="button" onclick="resetAdminFilters()" class="px-3 py-2 rounded-xl text-xs font-medium shrink-0 studio-chip">Reset</button>
+          </div>
         </div>
+
         <div id="admin-list" class="space-y-3"></div>
       </div>
 
@@ -373,6 +467,18 @@
         <div class="border-b pb-3 studio-divider">
           <h3 class="text-base font-bold studio-accent-text">Personalizzazione App & Consenso</h3>
           <p class="text-xs studio-muted mt-0.5">Le modifiche vengono salvate su Firestore e applicate subito</p>
+        </div>
+
+        <!-- IDENTITÀ STUDIO (HOME) -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold studio-muted mb-1">Nome Studio (Home & Barra)</label>
+            <input type="text" id="set-studio-name" placeholder="Italian Style Tattoo" class="w-full border rounded-xl px-3.5 py-2.5 text-sm focus:outline-none studio-input">
+          </div>
+          <div>
+            <label class="block text-xs font-bold studio-muted mb-1">Sottotitolo Home</label>
+            <input type="text" id="set-studio-subtitle" placeholder="Accoglienza clienti e consenso digitale" class="w-full border rounded-xl px-3.5 py-2.5 text-sm focus:outline-none studio-input">
+          </div>
         </div>
 
         <!-- MODALITÀ TEMA -->
@@ -473,7 +579,7 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-    import { getFirestore, collection, addDoc, getDoc, getDocs, setDoc, deleteDoc, doc, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, getDoc, getDocs, setDoc, deleteDoc, doc, query, where, orderBy, limit, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
     // For Firebase JS SDK v7.20.0 and later, measurementId is optional
     const firebaseConfig = {
@@ -490,11 +596,14 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    let allBookings = [];
+    let loadedBookings = [];
+    let todayBookings = [];
     const urlParams = new URLSearchParams(window.location.search);
     const ticketIdParam = urlParams.get('ticket');
 
     const DEFAULT_SETTINGS = {
+      nomeStudio: "Italian Style Tattoo",
+      sottotitoloStudio: "Accoglienza clienti, consenso digitale e promemoria appuntamenti",
       temaMode: "system",
       coloreAccento: "#f59e0b",
       logoUrl: "logo.png",
@@ -558,7 +667,7 @@
     function applyLogoSrc(url) {
       const src = (url && url.trim()) ? url.trim() : "logo.png";
       studioSettings.logoUrl = src;
-      ["nav-logo", "login-logo", "ticket-logo"].forEach(id => {
+      ["nav-logo", "login-logo", "home-logo", "ticket-logo"].forEach(id => {
         const img = document.getElementById(id);
         if (img) {
           img.style.display = "";
@@ -570,15 +679,43 @@
     function applyArtistsList(list) {
       const artists = Array.isArray(list) && list.length ? list : DEFAULT_SETTINGS.tatuatori;
       studioSettings.tatuatori = artists;
+
       const select = document.getElementById("tatuatore");
       if (select) {
         select.innerHTML = artists.map(name => `<option value="${name}">${name}</option>`).join("");
       }
+
+      const filterSelect = document.getElementById("filter-artist");
+      if (filterSelect) {
+        const currentVal = filterSelect.value || "ALL";
+        filterSelect.innerHTML = `<option value="ALL">Tutti i tatuatori</option>` +
+          artists.map(name => `<option value="${name}">${name}</option>`).join("");
+        filterSelect.value = artists.includes(currentVal) ? currentVal : "ALL";
+      }
+    }
+
+    function applyStudioBranding(name, subtitle) {
+      const cleanName = (name && name.trim()) ? name.trim() : DEFAULT_SETTINGS.nomeStudio;
+      const cleanSub = (subtitle && subtitle.trim()) ? subtitle.trim() : DEFAULT_SETTINGS.sottotitoloStudio;
+      studioSettings.nomeStudio = cleanName;
+      studioSettings.sottotitoloStudio = cleanSub;
+
+      document.title = `${cleanName} - Prenotazioni & Consenso`;
+      const navName = document.getElementById("nav-studio-name");
+      const homeName = document.getElementById("home-studio-name");
+      const homeSub = document.getElementById("home-studio-subtitle");
+      const loginTitle = document.getElementById("login-studio-title");
+
+      if (navName) navName.textContent = cleanName;
+      if (homeName) homeName.textContent = cleanName;
+      if (homeSub) homeSub.textContent = cleanSub;
+      if (loginTitle) loginTitle.textContent = cleanName;
     }
 
     function applyStudioSettingsToUI(settings) {
       const merged = { ...DEFAULT_SETTINGS, ...settings, logoUrl: "logo.png" };
       studioSettings = merged;
+      applyStudioBranding(merged.nomeStudio, merged.sottotitoloStudio);
       applyThemeMode(merged.temaMode || "system");
       applyAccentColor(merged.coloreAccento, true);
       applyLogoSrc("logo.png");
@@ -587,10 +724,14 @@
       const consensoEl = document.getElementById("consenso-text");
       if (consensoEl) consensoEl.textContent = merged.testoConsenso;
 
+      const setStudioName = document.getElementById("set-studio-name");
+      const setStudioSub = document.getElementById("set-studio-subtitle");
       const setArtists = document.getElementById("set-tatuatori");
       const setConsenso = document.getElementById("set-consenso-text");
       const setWa = document.getElementById("set-wa-template");
 
+      if (setStudioName) setStudioName.value = merged.nomeStudio;
+      if (setStudioSub) setStudioSub.value = merged.sottotitoloStudio;
       if (setArtists) setArtists.value = merged.tatuatori.join(", ");
       if (setConsenso) setConsenso.value = merged.testoConsenso;
       if (setWa) setWa.value = merged.messaggioWhatsApp;
@@ -625,12 +766,19 @@
         : "px-3.5 py-2 rounded-xl text-xs font-medium studio-chip";
     };
 
+    window.openAdminSection = (tab) => {
+      showView("admin-view");
+      switchAdminTab(tab);
+    };
+
     window.saveStudioSettings = async () => {
       const statusEl = document.getElementById("settings-status");
       const artistsRaw = document.getElementById("set-tatuatori").value;
       const artistsArray = artistsRaw.split(",").map(s => s.trim()).filter(Boolean);
 
       const payload = {
+        nomeStudio: document.getElementById("set-studio-name")?.value.trim() || DEFAULT_SETTINGS.nomeStudio,
+        sottotitoloStudio: document.getElementById("set-studio-subtitle")?.value.trim() || DEFAULT_SETTINGS.sottotitoloStudio,
         temaMode: document.getElementById("set-theme-mode")?.value || "system",
         coloreAccento: document.getElementById("set-accent-color").value,
         logoUrl: "logo.png",
@@ -675,15 +823,17 @@
       }
     };
 
-    // Gestione firma Canvas
+    // Gestione firma Canvas + Compressione leggera per Firestore
     const canvas = document.getElementById('signature-pad');
     const ctx = canvas.getContext('2d');
     let painting = false;
 
     function resizeCanvas() {
       const rect = canvas.getBoundingClientRect();
-      canvas.width = rect.width;
-      canvas.height = rect.height;
+      if (rect.width > 0 && rect.height > 0) {
+        canvas.width = rect.width;
+        canvas.height = rect.height;
+      }
     }
     window.addEventListener('resize', resizeCanvas);
     setTimeout(resizeCanvas, 200);
@@ -724,6 +874,117 @@
       ctx.clearRect(0, 0, canvas.width, canvas.height);
     };
 
+    function getOptimizedSignatureDataUrl() {
+      const targetWidth = 420;
+      const targetHeight = 160;
+      const offscreen = document.createElement('canvas');
+      offscreen.width = targetWidth;
+      offscreen.height = targetHeight;
+      const octx = offscreen.getContext('2d');
+      octx.clearRect(0, 0, targetWidth, targetHeight);
+      octx.drawImage(canvas, 0, 0, targetWidth, targetHeight);
+      return offscreen.toDataURL('image/png');
+    }
+
+    // Helper date locali YYYY-MM-DDTHH:MM per query Firestore
+    function pad2(n) {
+      return String(n).padStart(2, '0');
+    }
+
+    function toLocalDateStr(d) {
+      return `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())}`;
+    }
+
+    function getPeriodBounds(period) {
+      const now = new Date();
+      if (period === 'today') {
+        const day = toLocalDateStr(now);
+        return { start: `${day}T00:00`, end: `${day}T23:59` };
+      }
+      if (period === 'week') {
+        const dayOfWeek = now.getDay();
+        const diffToMonday = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+        const monday = new Date(now.getFullYear(), now.getMonth(), now.getDate() + diffToMonday);
+        const sunday = new Date(monday.getFullYear(), monday.getMonth(), monday.getDate() + 6);
+        return { start: `${toLocalDateStr(monday)}T00:00`, end: `${toLocalDateStr(sunday)}T23:59` };
+      }
+      if (period === 'month') {
+        const first = new Date(now.getFullYear(), now.getMonth(), 1);
+        const last = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+        return { start: `${toLocalDateStr(first)}T00:00`, end: `${toLocalDateStr(last)}T23:59` };
+      }
+      if (period === 'custom') {
+        const fromVal = document.getElementById('filter-date-from')?.value;
+        const toVal = document.getElementById('filter-date-to')?.value;
+        return {
+          start: fromVal ? `${fromVal}T00:00` : null,
+          end: toVal ? `${toVal}T23:59` : null
+        };
+      }
+      return { start: null, end: null };
+    }
+
+    // Caricamento appuntamenti di OGGI per la Home (consuma pochissime letture Firestore)
+    window.loadHomeTodayBookings = async () => {
+      const summaryEl = document.getElementById('home-today-summary');
+      const listEl = document.getElementById('home-today-list');
+      const dateBadge = document.getElementById('home-today-date');
+
+      const now = new Date();
+      if (dateBadge) {
+        dateBadge.textContent = now.toLocaleDateString('it-IT', {
+          weekday: 'long', day: '2-digit', month: 'long', year: 'numeric'
+        });
+      }
+
+      if (!summaryEl || !listEl) return;
+      summaryEl.textContent = "Aggiornamento agenda di oggi...";
+
+      try {
+        const { start, end } = getPeriodBounds('today');
+        const q = query(
+          collection(db, "appuntamenti"),
+          where("data_ora", ">=", start),
+          where("data_ora", "<=", end),
+          orderBy("data_ora", "asc")
+        );
+        const snapshot = await getDocs(q);
+        todayBookings = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+
+        const totalDeposits = todayBookings.reduce((sum, b) => sum + (Number(b.acconto) || 0), 0);
+        summaryEl.textContent = todayBookings.length === 0
+          ? "Nessun appuntamento registrato per oggi"
+          : `${todayBookings.length} appuntament${todayBookings.length === 1 ? 'o' : 'i'} • Caparre oggi: € ${totalDeposits.toFixed(2)}`;
+
+        if (todayBookings.length === 0) {
+          listEl.innerHTML = `<p class="text-xs studio-faint text-center py-4">Nessun cliente in programma oggi. Usa "+ Nuovo Appuntamento & Consenso" per inserirne uno.</p>`;
+          return;
+        }
+
+        listEl.innerHTML = todayBookings.map(item => {
+          const timeStr = new Date(item.data_ora).toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
+          return `
+            <div class="border rounded-xl p-3 flex items-center justify-between gap-2 studio-elevated">
+              <div>
+                <div class="flex items-center gap-2">
+                  <span class="text-xs font-extrabold studio-accent-text">${timeStr}</span>
+                  <span class="font-bold text-sm studio-strong">${item.nome} ${item.cognome}</span>
+                </div>
+                <p class="text-[11px] studio-muted mt-0.5">Tatuatore: <strong>${item.tatuatore}</strong> • Acconto: €${item.acconto}</p>
+              </div>
+              <div class="flex gap-1.5 shrink-0">
+                ${item.signature ? `<button onclick="viewConsensoById('${item.id}')" class="px-2.5 py-1.5 rounded-lg text-[11px] font-medium studio-accent-badge">Consenso</button>` : ''}
+                <button onclick="openTicketById('${item.id}')" class="px-2.5 py-1.5 rounded-lg text-[11px] studio-chip">QR</button>
+              </div>
+            </div>
+          `;
+        }).join('');
+      } catch (err) {
+        summaryEl.textContent = "Impossibile caricare l'agenda di oggi";
+        listEl.innerHTML = `<p class="text-xs text-red-500">${err.message}</p>`;
+      }
+    };
+
     loadStudioSettings();
 
     if (ticketIdParam) {
@@ -733,8 +994,7 @@
         if (user) {
           document.getElementById('studio-nav').classList.remove('hidden');
           document.getElementById('staff-back-btn').classList.remove('hidden');
-          showView('form-view');
-          setTimeout(resizeCanvas, 100);
+          showView('home-view');
         } else {
           document.getElementById('studio-nav').classList.add('hidden');
           showView('login-view');
@@ -743,15 +1003,19 @@
     }
 
     window.showView = (viewId) => {
-      ['login-view', 'form-view', 'ticket-view', 'admin-view'].forEach(id => {
+      ['login-view', 'home-view', 'form-view', 'ticket-view', 'admin-view'].forEach(id => {
         document.getElementById(id).classList.add('hidden');
       });
       document.getElementById(viewId).classList.remove('hidden');
+      if (viewId === 'home-view') {
+        loadHomeTodayBookings();
+      }
       if (viewId === 'admin-view') {
-        switchAdminTab('bookings');
         loadAdminBookings();
       }
-      if (viewId === 'form-view') setTimeout(resizeCanvas, 100);
+      if (viewId === 'form-view') {
+        setTimeout(resizeCanvas, 100);
+      }
     };
 
     document.getElementById('login-form').addEventListener('submit', async (e) => {
@@ -777,7 +1041,7 @@
     document.getElementById('booking-form').addEventListener('submit', async (e) => {
       e.preventDefault();
       const btn = document.getElementById('submit-btn');
-      const signatureData = canvas.toDataURL();
+      const signatureData = getOptimizedSignatureDataUrl();
 
       btn.disabled = true;
       btn.textContent = "Salvataggio in corso...";
@@ -876,20 +1140,75 @@
       alert("Link copiato!");
     };
 
-    async function loadAdminBookings() {
+    window.handlePeriodFilterChange = () => {
+      const period = document.getElementById('filter-period').value;
+      const customBox = document.getElementById('custom-date-range');
+      if (period === 'custom') {
+        customBox.classList.remove('hidden');
+        const fromInput = document.getElementById('filter-date-from');
+        const toInput = document.getElementById('filter-date-to');
+        const todayStr = toLocalDateStr(new Date());
+        if (!fromInput.value) fromInput.value = todayStr;
+        if (!toInput.value) toInput.value = todayStr;
+      } else {
+        customBox.classList.add('hidden');
+      }
+      loadAdminBookings();
+    };
+
+    window.resetAdminFilters = () => {
+      document.getElementById('filter-period').value = 'month';
+      document.getElementById('filter-artist').value = 'ALL';
+      document.getElementById('admin-search').value = '';
+      document.getElementById('custom-date-range').classList.add('hidden');
+      loadAdminBookings();
+    };
+
+    window.loadAdminBookings = async () => {
       const listEl = document.getElementById('admin-list');
       listEl.innerHTML = "<p class='text-xs studio-muted'>Caricamento...</p>";
-      const q = query(collection(db, "appuntamenti"), orderBy("data_ora", "desc"));
-      const snapshot = await getDocs(q);
-      allBookings = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
-      renderAdminList(allBookings);
-    }
+
+      const period = document.getElementById('filter-period')?.value || 'month';
+      const constraints = [];
+
+      if (period === 'recent50') {
+        constraints.push(orderBy("data_ora", "desc"), limit(50));
+      } else {
+        const { start, end } = getPeriodBounds(period);
+        if (start) constraints.push(where("data_ora", ">=", start));
+        if (end) constraints.push(where("data_ora", "<=", end));
+        constraints.push(orderBy("data_ora", "desc"));
+      }
+
+      try {
+        const q = query(collection(db, "appuntamenti"), ...constraints);
+        const snapshot = await getDocs(q);
+        loadedBookings = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+        applyAdminFilters();
+      } catch (err) {
+        listEl.innerHTML = `<p class='text-xs text-red-500'>Errore caricamento: ${err.message}</p>`;
+      }
+    };
+
+    window.applyAdminFilters = () => {
+      const term = (document.getElementById('admin-search')?.value || '').trim().toLowerCase();
+      const artistFilter = document.getElementById('filter-artist')?.value || 'ALL';
+
+      const filtered = loadedBookings.filter(b => {
+        const matchesName = !term || `${b.nome} ${b.cognome}`.toLowerCase().includes(term);
+        const matchesArtist = artistFilter === 'ALL' || b.tatuatore === artistFilter;
+        return matchesName && matchesArtist;
+      });
+
+      renderAdminList(filtered);
+    };
 
     function renderAdminList(items) {
-      document.getElementById('admin-count').textContent = `${items.length} appuntamenti`;
+      const totalDeposits = items.reduce((sum, b) => sum + (Number(b.acconto) || 0), 0);
+      document.getElementById('admin-count').textContent = `${items.length} appuntamenti • Acconti filtrati: € ${totalDeposits.toFixed(2)}`;
       const listEl = document.getElementById('admin-list');
       if (items.length === 0) {
-        listEl.innerHTML = "<p class='text-sm studio-faint text-center py-6'>Nessun appuntamento.</p>";
+        listEl.innerHTML = "<p class='text-sm studio-faint text-center py-6'>Nessun appuntamento trovato con i filtri selezionati.</p>";
         return;
       }
       listEl.innerHTML = items.map(item => {
@@ -902,11 +1221,11 @@
               <span class="text-xs px-2 py-0.5 rounded ml-2 studio-accent-badge">${item.tatuatore}</span>
               ${minorBadge}
               <p class="text-xs studio-muted mt-1">📅 ${dateStr} • Acconto: €${item.acconto} • Doc: ${item.doc_tipo} (${item.doc_numero})</p>
-              ${item.signature ? '<p class="text-[11px] text-emerald-500 mt-1 cursor-pointer hover:underline" onclick="viewConsensoModal(\''+item.id+'\')">✓ Consenso firmato (Clicca per vedere)</p>' : '<p class="text-[11px] studio-faint mt-1">Nessuna firma</p>'}
+              ${item.signature ? '<p class="text-[11px] text-emerald-500 mt-1 cursor-pointer hover:underline" onclick="viewConsensoById(\''+item.id+'\')">✓ Consenso firmato (Clicca per vedere)</p>' : '<p class="text-[11px] studio-faint mt-1">Nessuna firma</p>'}
             </div>
             <div class="flex flex-wrap gap-2">
-              ${item.signature ? `<button onclick="viewConsensoModal('${item.id}')" class="px-3 py-1.5 rounded-lg text-xs font-medium studio-accent-badge">Consenso</button>` : ''}
-              <button onclick="openAdminTicket('${item.id}')" class="px-3 py-1.5 rounded-lg text-xs studio-chip">QR / Info</button>
+              ${item.signature ? `<button onclick="viewConsensoById('${item.id}')" class="px-3 py-1.5 rounded-lg text-xs font-medium studio-accent-badge">Consenso</button>` : ''}
+              <button onclick="openTicketById('${item.id}')" class="px-3 py-1.5 rounded-lg text-xs studio-chip">QR / Info</button>
               <button onclick="deleteBooking('${item.id}')" class="px-3 py-1.5 bg-red-600/15 text-red-500 hover:bg-red-600/25 rounded-lg text-xs">Elimina</button>
             </div>
           </div>
@@ -914,14 +1233,12 @@
       }).join('');
     }
 
-    window.filterAdminList = () => {
-      const term = document.getElementById('admin-search').value.toLowerCase();
-      const filtered = allBookings.filter(b => `${b.nome} ${b.cognome}`.toLowerCase().includes(term));
-      renderAdminList(filtered);
-    };
+    function findBookingById(id) {
+      return loadedBookings.find(b => b.id === id) || todayBookings.find(b => b.id === id);
+    }
 
-    window.viewConsensoModal = (id) => {
-      const found = allBookings.find(b => b.id === id);
+    window.viewConsensoById = (id) => {
+      const found = findBookingById(id);
       if (found && found.signature) {
         document.getElementById('m-cliente').textContent = `${found.nome} ${found.cognome}`;
         document.getElementById('m-doc').textContent = `${found.doc_tipo} N. ${found.doc_numero}`;
@@ -951,13 +1268,20 @@
       document.getElementById('modal-consenso').classList.add('hidden');
     };
 
-    window.openAdminTicket = (id) => {
-      const found = allBookings.find(b => b.id === id);
-      if (found) { renderTicket(id, found); showView('ticket-view'); }
+    window.openTicketById = (id) => {
+      const found = findBookingById(id);
+      if (found) {
+        renderTicket(id, found);
+        showView('ticket-view');
+      }
     };
 
     window.deleteBooking = async (id) => {
-      if (confirm("Eliminare appuntamento e consenso?")) { await deleteDoc(doc(db, "appuntamenti", id)); loadAdminBookings(); }
+      if (confirm("Eliminare appuntamento e consenso?")) {
+        await deleteDoc(doc(db, "appuntamenti", id));
+        loadAdminBookings();
+        loadHomeTodayBookings();
+      }
     };
 
     if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');
