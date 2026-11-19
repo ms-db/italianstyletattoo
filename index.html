@@ -394,21 +394,12 @@
             <button type="button" onclick="applyAccentColor('#eab308', true)" class="px-3 py-1.5 rounded-lg text-xs bg-yellow-400 text-black font-bold">Oro</button>
             <button type="button" onclick="applyAccentColor('#ef4444', true)" class="px-3 py-1.5 rounded-lg text-xs bg-red-500 text-white font-bold">Rosso Ink</button>
             <button type="button" onclick="applyAccentColor('#71717a', true)" class="px-3 py-1.5 rounded-lg text-xs bg-zinc-500 text-white font-bold">Grafite</button>
+            <button type="button" onclick="applyAccentColor('#22c55e', true)" class="px-3 py-1.5 rounded-lg text-xs bg-green-500 text-black font-bold">Verde</button>
+            <button type="button" onclick="applyAccentColor('#38bdf8', true)" class="px-3 py-1.5 rounded-lg text-xs bg-sky-400 text-black font-bold">Azzurro</button>
+            <button type="button" onclick="applyAccentColor('#c084fc', true)" class="px-3 py-1.5 rounded-lg text-xs bg-purple-400 text-black font-bold">Viola chiaro</button>
+            <button type="button" onclick="applyAccentColor('#09090b', true)" class="px-3 py-1.5 rounded-lg text-xs bg-zinc-950 text-white border border-zinc-600 font-bold">Nero</button>
             <input type="color" id="set-accent-color" value="#f59e0b" onchange="applyAccentColor(this.value, false)" class="h-8 w-12 border rounded cursor-pointer studio-input">
           </div>
-        </div>
-
-        <!-- LOGO STUDIO -->
-        <div class="space-y-2">
-          <label class="block text-xs font-bold studio-muted">Logo Studio (URL o File Immagine)</label>
-          <div class="flex items-center gap-3">
-            <img id="set-logo-preview" src="logo.png" alt="Anteprima Logo" class="h-14 w-14 object-contain rounded-xl border p-1.5 studio-elevated" onerror="this.style.display='none'">
-            <div class="flex-1 space-y-2">
-              <input type="text" id="set-logo-url" placeholder="logo.png oppure https://..." oninput="previewLogoUrl(this.value)" class="w-full border rounded-xl px-3.5 py-2 text-xs focus:outline-none studio-input">
-              <input type="file" id="set-logo-file" accept="image/*" onchange="handleLogoFileUpload(event)" class="block w-full text-xs studio-muted file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-medium file:bg-amber-500/15 file:text-amber-500">
-            </div>
-          </div>
-          <p class="text-[11px] studio-faint">Suggerimento: usa un'immagine leggera (es. &lt; 300 KB) se carichi un file diretto.</p>
         </div>
 
         <!-- TATUATORI -->
@@ -567,7 +558,7 @@
     function applyLogoSrc(url) {
       const src = (url && url.trim()) ? url.trim() : "logo.png";
       studioSettings.logoUrl = src;
-      ["nav-logo", "login-logo", "ticket-logo", "set-logo-preview"].forEach(id => {
+      ["nav-logo", "login-logo", "ticket-logo"].forEach(id => {
         const img = document.getElementById(id);
         if (img) {
           img.style.display = "";
@@ -586,22 +577,20 @@
     }
 
     function applyStudioSettingsToUI(settings) {
-      const merged = { ...DEFAULT_SETTINGS, ...settings };
+      const merged = { ...DEFAULT_SETTINGS, ...settings, logoUrl: "logo.png" };
       studioSettings = merged;
       applyThemeMode(merged.temaMode || "system");
       applyAccentColor(merged.coloreAccento, true);
-      applyLogoSrc(merged.logoUrl);
+      applyLogoSrc("logo.png");
       applyArtistsList(merged.tatuatori);
 
       const consensoEl = document.getElementById("consenso-text");
       if (consensoEl) consensoEl.textContent = merged.testoConsenso;
 
-      const setLogoUrl = document.getElementById("set-logo-url");
       const setArtists = document.getElementById("set-tatuatori");
       const setConsenso = document.getElementById("set-consenso-text");
       const setWa = document.getElementById("set-wa-template");
 
-      if (setLogoUrl) setLogoUrl.value = merged.logoUrl;
       if (setArtists) setArtists.value = merged.tatuatori.join(", ");
       if (setConsenso) setConsenso.value = merged.testoConsenso;
       if (setWa) setWa.value = merged.messaggioWhatsApp;
@@ -618,20 +607,6 @@
         console.warn("Uso impostazioni predefinite:", err.message);
       }
     }
-
-    window.previewLogoUrl = (val) => applyLogoSrc(val);
-
-    window.handleLogoFileUpload = (event) => {
-      const file = event.target.files?.[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = () => {
-        const base64 = String(reader.result || "");
-        document.getElementById("set-logo-url").value = base64;
-        applyLogoSrc(base64);
-      };
-      reader.readAsDataURL(file);
-    };
 
     window.switchAdminTab = (tab) => {
       const isBookings = tab === "bookings";
@@ -658,7 +633,7 @@
       const payload = {
         temaMode: document.getElementById("set-theme-mode")?.value || "system",
         coloreAccento: document.getElementById("set-accent-color").value,
-        logoUrl: document.getElementById("set-logo-url").value.trim() || "logo.png",
+        logoUrl: "logo.png",
         tatuatori: artistsArray.length ? artistsArray : DEFAULT_SETTINGS.tatuatori,
         testoConsenso: document.getElementById("set-consenso-text").value.trim() || DEFAULT_SETTINGS.testoConsenso,
         messaggioWhatsApp: document.getElementById("set-wa-template").value.trim() || DEFAULT_SETTINGS.messaggioWhatsApp,
@@ -793,7 +768,11 @@
       }
     });
 
-    window.logoutAdmin = () => signOut(auth);
+    window.logoutAdmin = () => {
+      if (confirm("Vuoi davvero uscire dall'area riservata dello studio?")) {
+        signOut(auth);
+      }
+    };
 
     document.getElementById('booking-form').addEventListener('submit', async (e) => {
       e.preventDefault();
