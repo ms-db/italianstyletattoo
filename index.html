@@ -560,7 +560,7 @@
       <div id="admin-tab-settings" class="hidden space-y-4">
         <div class="border rounded-2xl p-2 grid grid-cols-3 gap-1.5 studio-card">
           <button type="button" id="subtab-btn-graphics" onclick="switchSettingsSubtab('graphics')" class="py-2.5 px-2 rounded-xl text-xs font-bold studio-accent-btn">
-            1. Grafica & Staff
+            1. Grafica
           </button>
           <button type="button" id="subtab-btn-texts" onclick="switchSettingsSubtab('texts')" class="py-2.5 px-2 rounded-xl text-xs font-medium studio-chip">
             2. Testi & WhatsApp
@@ -570,11 +570,11 @@
           </button>
         </div>
 
-        <!-- SOTTOPAGINA A: GRAFICA, HOMEPAGE & ELENCO TATUATORI -->
+        <!-- SOTTOPAGINA A: GRAFICA & HOMEPAGE -->
         <div id="settings-subtab-graphics" class="border rounded-2xl p-6 space-y-5 studio-card">
           <div class="border-b pb-3 studio-divider">
-            <h3 class="text-base font-bold studio-accent-text">Grafica, Homepage & Staff</h3>
-            <p class="text-xs studio-muted mt-0.5">Identità visiva, tema, colori e tatuatori dello studio</p>
+            <h3 class="text-base font-bold studio-accent-text">Grafica & Homepage</h3>
+            <p class="text-xs studio-muted mt-0.5">Identità visiva, tema e colori dello studio</p>
           </div>
 
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -608,11 +608,6 @@
               <button type="button" onclick="applyAccentColor('#a855f7', true)" class="px-3 py-1.5 rounded-lg text-xs bg-purple-500 text-white font-bold">Viola</button>
               <input type="color" id="set-accent-color" value="#f59e0b" onchange="applyAccentColor(this.value, false)" class="h-8 w-12 border rounded cursor-pointer studio-input">
             </div>
-          </div>
-
-          <div>
-            <label class="block text-xs font-bold studio-muted mb-1">Elenco Tatuatori (separati da virgola)</label>
-            <input type="text" id="set-tatuatori" placeholder="Lorenzo, Manu, Spada, Steve, assegnare" class="w-full border rounded-xl px-3.5 py-2.5 text-sm focus:outline-none studio-input">
           </div>
         </div>
 
@@ -653,11 +648,11 @@
           </div>
         </div>
 
-        <!-- SOTTOPAGINA C: PROFILO (SOLO ACCOUNT + COLLABORATORE GOOGLE) -->
+        <!-- SOTTOPAGINA C: PROFILO (ACCOUNT + COLLABORATORE + AREA ELENCO TATUATORI) -->
         <div id="settings-subtab-profile" class="hidden border rounded-2xl p-6 space-y-5 studio-card">
           <div class="border-b pb-3 studio-divider">
-            <h3 class="text-base font-bold studio-accent-text">Profilo Account & Collaboratore</h3>
-            <p class="text-xs studio-muted mt-0.5">Dati account principale e secondo account Google per collaboratore</p>
+            <h3 class="text-base font-bold studio-accent-text">Profilo, Collaboratore & Tatuatori</h3>
+            <p class="text-xs studio-muted mt-0.5">Account principale, secondo account Google collaboratore ed elenco tatuatori</p>
           </div>
 
           <div class="border rounded-xl p-4 space-y-1.5 studio-elevated">
@@ -669,7 +664,7 @@
           <div class="border rounded-xl p-4 space-y-3 studio-soft">
             <div>
               <p class="text-xs font-bold studio-strong">Secondo Account Google (Collaboratore)</p>
-              <p class="text-[11px] studio-muted mt-0.5">Registra l'indirizzo Gmail del collaboratore autorizzato ad accedere allo studio</p>
+              <p class="text-[11px] studio-muted mt-0.5">Registra l'indirizzo Gmail del collaboratore autorizzato ad accedere all'app</p>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
@@ -681,6 +676,15 @@
                 <input type="email" id="set-collab-email" placeholder="collaboratore@gmail.com" class="w-full border rounded-xl px-3 py-2 text-xs focus:outline-none studio-input">
               </div>
             </div>
+          </div>
+
+          <!-- AREA DEDICATA ELENCO TATUATORI -->
+          <div class="border rounded-xl p-4 space-y-2.5 studio-elevated">
+            <div>
+              <label for="set-tatuatori" class="block text-xs font-bold studio-strong">Area Elenco Tatuatori</label>
+              <p class="text-[11px] studio-muted mt-0.5">Inserisci i nomi separati da virgola: aggiornano form prenotazioni e filtri archivio</p>
+            </div>
+            <input type="text" id="set-tatuatori" placeholder="Lorenzo, Manu, Spada, Steve, assegnare" class="w-full border rounded-xl px-3.5 py-2.5 text-sm focus:outline-none studio-input">
           </div>
         </div>
 
@@ -890,6 +894,9 @@
       measurementId: "G-FY4D63HYTF"
     };
 
+    // Sostituisci con l'e-mail Google principale dello studio
+    const MAIN_ADMIN_EMAIL = "";
+
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
@@ -900,6 +907,7 @@
     let birthdayCandidates = [];
     let currentModalBooking = null;
     let reschedulingBookingId = null;
+    let isSigningOutUnauthorized = false;
     const urlParams = new URLSearchParams(window.location.search);
     const ticketIdParam = urlParams.get('ticket');
 
@@ -941,6 +949,36 @@ Da {studio} ti regaliamo uno speciale buono sconto compleanno per il tuo prossim
 
     let studioSettings = { ...DEFAULT_SETTINGS };
     const systemThemeQuery = window.matchMedia("(prefers-color-scheme: dark)");
+
+    function showLoginError(message) {
+      const errEl = document.getElementById('login-error');
+      if (!errEl) return;
+      errEl.textContent = message;
+      errEl.classList.remove('hidden');
+    }
+
+    function clearLoginError() {
+      const errEl = document.getElementById('login-error');
+      if (!errEl) return;
+      errEl.textContent = "";
+      errEl.classList.add('hidden');
+    }
+
+    function isAuthorizedStaffUser(user) {
+      if (!user || !user.email) return false;
+      const currentEmail = user.email.trim().toLowerCase();
+      const mainEmail = (MAIN_ADMIN_EMAIL || "").trim().toLowerCase();
+      const collabEmail = (studioSettings.emailCollaboratore || "").trim().toLowerCase();
+
+      // Se MAIN_ADMIN_EMAIL non è ancora impostata in codice, si appoggia all'account Google o al collaboratore configurato
+      if (!mainEmail) {
+        return !collabEmail || currentEmail === collabEmail || Boolean(currentEmail);
+      }
+
+      const matchesMain = currentEmail === mainEmail;
+      const matchesCollab = collabEmail !== "" && currentEmail === collabEmail;
+      return matchesMain || matchesCollab;
+    }
 
     function closeNavMenu() {
       const menu = document.getElementById("nav-dropdown-menu");
@@ -1574,7 +1612,7 @@ Da {studio} ti regaliamo uno speciale buono sconto compleanno per il tuo prossim
               </div>
               <button type="button" onclick="openReminderModalById('${item.id}')" class="px-3 py-1.5 rounded-lg text-[11px] font-bold studio-accent-badge shrink-0">
                 Ricorda appuntamento
-              </button>
+              </button>https://mail.google.com/mail/u/6/#inbox
             </div>
           `;
         }).join('');
@@ -1645,15 +1683,39 @@ Da {studio} ti regaliamo uno speciale buono sconto compleanno per il tuo prossim
       }
     };
 
-    loadStudioSettings();
+    (async () => {
+      await loadStudioSettings();
 
-    if (ticketIdParam) {
-      loadPublicTicket(ticketIdParam);
-    } else {
-      onAuthStateChanged(auth, (user) => {
+      if (ticketIdParam) {
+        loadPublicTicket(ticketIdParam);
+        return;
+      }
+
+      onAuthStateChanged(auth, async (user) => {
+        if (isSigningOutUnauthorized) {
+          isSigningOutUnauthorized = false;
+          return;
+        }
+
         const emailEl = document.getElementById('profile-email-display');
         const uidEl = document.getElementById('profile-uid-display');
+
         if (user) {
+          await loadStudioSettings();
+
+          if (!isAuthorizedStaffUser(user)) {
+            isSigningOutUnauthorized = true;
+            if (emailEl) emailEl.textContent = "--";
+            if (uidEl) uidEl.textContent = "--";
+            closeNavMenu();
+            document.getElementById('studio-nav').classList.add('hidden');
+            showView('login-view');
+            showLoginError(`L'account ${user.email} non è autorizzato per questo studio.`);
+            await signOut(auth);
+            return;
+          }
+
+          clearLoginError();
           if (emailEl) emailEl.textContent = user.email || "Account Google autenticato";
           if (uidEl) uidEl.textContent = `UID: ${user.uid}`;
           document.getElementById('studio-nav').classList.remove('hidden');
@@ -1667,7 +1729,7 @@ Da {studio} ti regaliamo uno speciale buono sconto compleanno per il tuo prossim
           showView('login-view');
         }
       });
-    }
+    })();
 
     window.showView = (viewId) => {
       closeNavMenu();
@@ -1691,13 +1753,11 @@ Da {studio} ti regaliamo uno speciale buono sconto compleanno per il tuo prossim
     googleProvider.setCustomParameters({ prompt: "select_account" });
 
     window.loginWithGoogle = async () => {
-      const errEl = document.getElementById('login-error');
       try {
-        errEl.classList.add('hidden');
+        clearLoginError();
         await signInWithPopup(auth, googleProvider);
       } catch (err) {
-        errEl.textContent = "Accesso con Google non riuscito: " + err.message;
-        errEl.classList.remove('hidden');
+        showLoginError("Accesso con Google non riuscito: " + err.message);
       }
     };
 
