@@ -210,32 +210,16 @@
 
   <main class="max-w-xl mx-auto p-4 pt-6 pb-12">
 
-    <!-- 1. LOGIN (EMAIL/PASSWORD + GOOGLE) -->
+    <!-- 1. LOGIN (SOLO GOOGLE) -->
     <section id="login-view" class="hidden border rounded-2xl p-6 shadow-xl mt-10 studio-card">
       <div class="text-center mb-6">
         <img id="login-logo" src="logo.png" alt="Logo" class="h-16 mx-auto mb-3 object-contain" onerror="this.style.display='none'">
         <h1 id="login-studio-title" class="text-xl font-bold studio-strong">Accesso Riservato Studio</h1>
-        <p class="text-xs studio-muted mt-1">Accedi con email e password oppure con Google</p>
+        <p class="text-xs studio-muted mt-1">Accedi con l'account Google autorizzato dello studio</p>
       </div>
-      <form id="login-form" class="space-y-4">
-        <div>
-          <label class="block text-xs studio-muted mb-1">Email Admin</label>
-          <input type="email" id="login-email" autocomplete="email" required class="w-full border rounded-xl px-4 py-2.5 text-sm focus:outline-none studio-input">
-        </div>
-        <div>
-          <label class="block text-xs studio-muted mb-1">Password</label>
-          <input type="password" id="login-pass" autocomplete="current-password" required class="w-full border rounded-xl px-4 py-2.5 text-sm focus:outline-none studio-input">
-        </div>
-        <p id="login-error" class="text-xs text-red-500 hidden"></p>
-        <button type="submit" id="login-submit-btn" class="w-full font-bold py-3 rounded-xl transition studio-accent-btn">Accedi con Email</button>
-
-        <div class="relative flex py-1.5 items-center">
-          <div class="flex-grow border-t studio-divider"></div>
-          <span class="flex-shrink mx-3 text-[11px] studio-faint uppercase">oppure</span>
-          <div class="flex-grow border-t studio-divider"></div>
-        </div>
-
-        <button type="button" onclick="loginWithGoogle()" class="w-full py-3 px-4 rounded-xl border font-semibold text-sm flex items-center justify-center gap-2.5 transition studio-chip studio-divider">
+      <div class="space-y-4">
+        <p id="login-error" class="text-xs text-red-500 text-center hidden"></p>
+        <button type="button" onclick="loginWithGoogle()" class="w-full py-3.5 px-4 rounded-xl border font-bold text-sm flex items-center justify-center gap-2.5 transition studio-accent-btn studio-divider">
           <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" aria-hidden="true">
             <path fill="#EA4335" d="M12 5c1.6 0 3 .6 4.1 1.6l3.1-3.1C17.3 1.7 14.8 1 12 1 7.4 1 3.5 3.6 1.6 7.4l3.7 2.8C6.2 7.2 8.9 5 12 5z"/>
             <path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.7-.2-2.5H12v4.8h6.5c-.3 1.5-1.1 2.8-2.4 3.6l3.7 2.9c2.2-2 3.7-5 3.7-8.8z"/>
@@ -244,7 +228,7 @@
           </svg>
           <span>Accedi con Google</span>
         </button>
-      </form>
+      </div>
     </section>
 
     <!-- 1B. HOME DI FACCIATA -->
@@ -687,7 +671,7 @@
   <!-- SCRIPT FIREBASE -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
     import { getFirestore, collection, addDoc, getDoc, getDocs, setDoc, deleteDoc, doc, query, where, orderBy, limit, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
     const firebaseConfig = {
@@ -1196,27 +1180,6 @@
         setTimeout(resizeCanvas, 100);
       }
     };
-
-    document.getElementById('login-form').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const email = document.getElementById('login-email').value.trim();
-      const pass = document.getElementById('login-pass').value;
-      const errEl = document.getElementById('login-error');
-      const btn = document.getElementById('login-submit-btn');
-
-      btn.disabled = true;
-      btn.textContent = "Accesso in corso...";
-      try {
-        errEl.classList.add('hidden');
-        await signInWithEmailAndPassword(auth, email, pass);
-      } catch (err) {
-        errEl.textContent = "Accesso email/password non riuscito: verifica credenziali e provider su Firebase.";
-        errEl.classList.remove('hidden');
-      } finally {
-        btn.disabled = false;
-        btn.textContent = "Accedi con Email";
-      }
-    });
 
     const googleProvider = new GoogleAuthProvider();
     googleProvider.setCustomParameters({ prompt: "select_account" });
