@@ -137,7 +137,7 @@
         background-color: #ffffff !important;
         color: #000000 !important;
       }
-      #studio-nav, main > section, #modal-compleanno, #modal-consenso > div > :not(#print-consent-sheet) {
+      #studio-nav, footer, main > section, #modal-compleanno, #modal-promemoria, #modal-consenso > div > :not(#print-consent-sheet) {
         display: none !important;
       }
       #modal-consenso {
@@ -165,7 +165,7 @@
     }
   </style>
 </head>
-<body class="studio-page min-h-screen font-sans transition-colors duration-200">
+<body class="studio-page min-h-screen font-sans transition-colors duration-200 flex flex-col">
 
   <!-- NAVBAR A CONTRASTO CON MENU A TENDINA -->
   <nav id="studio-nav" class="hidden border-b sticky top-0 z-20 studio-nav">
@@ -198,6 +198,10 @@
             <span>Impostazioni Studio</span>
             <span class="studio-faint">⚙</span>
           </button>
+          <button type="button" onclick="selectNavAction('info')" class="w-full text-left px-3.5 py-2.5 rounded-xl text-xs font-medium flex items-center justify-between mt-1 studio-chip">
+            <span>Info App & GDPR</span>
+            <span class="studio-faint">ⓘ</span>
+          </button>
           <div class="border-t my-1.5 studio-divider"></div>
           <button type="button" onclick="selectNavAction('logout')" class="w-full text-left px-3.5 py-2.5 rounded-xl text-xs font-semibold flex items-center justify-between bg-red-600/15 text-red-500 hover:bg-red-600/25">
             <span>Esci dall'Area Admin</span>
@@ -208,7 +212,7 @@
     </div>
   </nav>
 
-  <main class="max-w-xl mx-auto p-4 pt-6 pb-12">
+  <main class="max-w-xl w-full mx-auto p-4 pt-6 pb-8 flex-1">
 
     <!-- 1. LOGIN (SOLO GOOGLE) -->
     <section id="login-view" class="hidden border rounded-2xl p-6 shadow-xl mt-10 studio-card">
@@ -282,6 +286,7 @@
         </div>
       </div>
 
+      <!-- OGGI IN STUDIO -->
       <div class="border rounded-2xl p-5 space-y-3 studio-card">
         <div class="flex items-center justify-between border-b pb-3 studio-divider">
           <div>
@@ -291,6 +296,18 @@
           <button type="button" onclick="loadHomeTodayBookings()" class="px-2.5 py-1 rounded-lg text-[11px] font-medium studio-chip">Aggiorna</button>
         </div>
         <div id="home-today-list" class="space-y-2.5"></div>
+      </div>
+
+      <!-- APPUNTAMENTI DI DOMANI & RICORDA APPUNTAMENTO -->
+      <div id="home-tomorrow-card" class="border rounded-2xl p-5 space-y-3 studio-card">
+        <div class="flex items-center justify-between border-b pb-3 studio-divider">
+          <div>
+            <h2 class="text-sm font-bold studio-accent-text uppercase tracking-wider">Appuntamenti di Domani</h2>
+            <p id="home-tomorrow-summary" class="text-xs studio-muted mt-0.5">Caricamento agenda di domani...</p>
+          </div>
+          <button type="button" onclick="loadHomeTomorrowBookings()" class="px-2.5 py-1 rounded-lg text-[11px] font-medium studio-chip">Aggiorna</button>
+        </div>
+        <div id="home-tomorrow-list" class="space-y-2.5"></div>
       </div>
     </section>
 
@@ -624,6 +641,12 @@
           </div>
 
           <div>
+            <label class="block text-xs font-bold studio-muted mb-1">Messaggio "Ricorda Appuntamento" (Domani)</label>
+            <textarea id="set-reminder-template" rows="4" class="w-full border rounded-xl px-3.5 py-2.5 text-xs leading-relaxed focus:outline-none studio-input"></textarea>
+            <p class="text-[11px] studio-faint mt-1">Variabili disponibili: <code>{nome}</code>, <code>{cognome}</code>, <code>{data}</code>, <code>{tatuatore}</code>, <code>{acconto}</code>, <code>{studio}</code></p>
+          </div>
+
+          <div>
             <label class="block text-xs font-bold studio-muted mb-1">Messaggio Auguri Compleanno & Buono Sconto</label>
             <textarea id="set-birthday-template" rows="4" class="w-full border rounded-xl px-3.5 py-2.5 text-xs leading-relaxed focus:outline-none studio-input"></textarea>
             <p class="text-[11px] studio-faint mt-1">Variabili disponibili: <code>{nome}</code>, <code>{cognome}</code>, <code>{studio}</code></p>
@@ -650,6 +673,16 @@
                 Esegue un'unica lettura mirata dell'archivio solo quando premi il pulsante e salva un file JSON completo (appuntamenti, date di nascita, documenti, note e configurazione studio).
               </p>
             </div>
+
+            <div class="border rounded-xl p-3 space-y-1.5 studio-elevated">
+              <p class="text-[11px] font-bold studio-accent-text uppercase tracking-wider">Come gestire il backup del file .json</p>
+              <ul class="text-[11px] studio-muted space-y-1 list-disc pl-4 leading-relaxed">
+                <li><strong>Conservazione sicura:</strong> sposta il file scaricato (es. <code>archivio-studio-AAAA-MM-GG.json</code>) in una cartella protetta dello studio o su spazio cloud aziendale riservato, evitando cartelle condivise non protette o dispositivi pubblici.</li>
+                <li><strong>Cadenza consigliata:</strong> genera un backup periodico (settimanale o mensile) e rinomina o archivia le copie per data così da avere uno storico ordinato.</li>
+                <li><strong>Tutela dei dati (GDPR):</strong> il file contiene dati anagrafici e di contatto dei clienti; eliminalo o mettilo al sicuro se non serve più su un dispositivo locale.</li>
+              </ul>
+            </div>
+
             <button type="button" id="btn-export-archive" onclick="downloadFullArchiveJson()" class="w-full py-3 px-4 rounded-xl text-xs font-bold studio-accent-btn transition">
               Scarica Archivio Completo (.json)
             </button>
@@ -665,6 +698,49 @@
         </div>
       </div>
     </section>
+
+    <!-- 5. INFO APP (RAGGIUNGIBILE SOLO DAL MENU A TENDINA) -->
+    <section id="info-view" class="hidden border rounded-3xl p-6 shadow-xl studio-card space-y-5">
+      <div class="flex items-center justify-between border-b pb-3 studio-divider">
+        <div>
+          <h2 class="text-xl font-extrabold studio-strong">Studio Desk - beta test</h2>
+          <p class="text-[11px] studio-faint mt-0.5">(ms-db.creator) copyright</p>
+        </div>
+        <button type="button" onclick="showView('home-view')" class="text-xs px-3 py-1.5 rounded-xl studio-chip">← Home</button>
+      </div>
+
+      <div class="border rounded-2xl p-4 space-y-2 studio-elevated">
+        <p class="text-xs font-bold uppercase tracking-wider studio-accent-text">Informazioni, Copyright & Privacy (GDPR)</p>
+        <p class="text-xs studio-muted leading-relaxed">
+          Tutti i dati, archivio e backup dell'app Studio Desk sono gestibili direttamente dall'account Firebase che è intestato e gestito direttamente dallo studio, che resta l'unico Titolare del trattamento dei dati ai fini della normativa privacy (GDPR).
+        </p>
+      </div>
+    </section>
+
+    <!-- MODALE RICORDA APPUNTAMENTO -->
+    <div id="modal-promemoria" class="hidden fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
+      <div class="border rounded-3xl max-w-md w-full p-6 space-y-4 shadow-2xl studio-card">
+        <div class="flex justify-between items-center border-b pb-3 studio-divider">
+          <h3 class="font-bold studio-accent-text text-sm">⏰ Ricorda Appuntamento</h3>
+          <button type="button" onclick="closeReminderModal()" class="text-sm px-2.5 py-1 rounded-lg studio-chip">✕ Chiudi</button>
+        </div>
+
+        <div class="border rounded-2xl p-4 space-y-1.5 studio-elevated">
+          <p id="rem-client-name" class="text-base font-extrabold studio-strong">--</p>
+          <p id="rem-client-info" class="text-xs studio-muted">--</p>
+          <p id="rem-client-phone" class="text-xs studio-faint">--</p>
+        </div>
+
+        <div class="border rounded-2xl p-3.5 space-y-1.5 studio-soft">
+          <p class="text-[11px] font-bold uppercase tracking-wider studio-accent-text">Anteprima Messaggio</p>
+          <p id="rem-message-preview" class="text-xs studio-muted whitespace-pre-line leading-relaxed">--</p>
+        </div>
+
+        <a id="rem-wa-btn" href="#" target="_blank" class="w-full flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 rounded-xl text-xs transition">
+          <span>Ricorda appuntamento su WhatsApp</span>
+        </a>
+      </div>
+    </div>
 
     <!-- MODALE COMPLEANNO & BUONO SCONTO -->
     <div id="modal-compleanno" class="hidden fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
@@ -747,6 +823,11 @@
 
   </main>
 
+  <!-- PIE DI PAGINA SU UN RIGO IN PICCOLO -->
+  <footer class="pt-4 pb-5 px-4 text-center">
+    <p class="text-[10px] studio-faint tracking-wide">(Studio Desk - beta test) (ms-db.creator) copyright 2026</p>
+  </footer>
+
   <!-- SCRIPT FIREBASE -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
@@ -769,6 +850,7 @@
 
     let loadedBookings = [];
     let todayBookings = [];
+    let tomorrowBookings = [];
     let birthdayCandidates = [];
     let currentModalBooking = null;
     const urlParams = new URLSearchParams(window.location.search);
@@ -781,6 +863,14 @@
 3. Non grattare né staccare pellicine o crosticine durante la guarigione.
 4. Evita immersioni (mare, piscina, vasca), saune e sole diretto finché la pelle non è completamente rigenerata.
 5. In caso di dubbi o arrossamenti anomali contattaci subito.`;
+
+    const DEFAULT_REMINDER_MESSAGE =
+`Ciao {nome}! Ti ricordiamo il tuo appuntamento di domani presso {studio}:
+📅 {data}
+🖋️ Tatuatore: {tatuatore}
+💶 Acconto versato: €{acconto}
+
+A domani!`;
 
     const DEFAULT_BIRTHDAY_MESSAGE =
 `Tanti auguri di buon compleanno {nome}! 🎉
@@ -796,6 +886,7 @@ Da {studio} ti regaliamo uno speciale buono sconto compleanno per il tuo prossim
       testoConsenso: "Il sottoscritto (o in qualità di genitore/tutore del minore) dichiara di essere maggiorenne ed autorizzato, di non essere affetto da patologie incompatibili con l'esecuzione del tatuaggio e di sollevare lo studio da reazioni allergiche imprevedibili ai pigmenti. Autorizza inoltre il trattamento dei dati personali ai sensi del GDPR.",
       guidaCuraTatuaggio: DEFAULT_CARE_GUIDE,
       messaggioWhatsApp: "Ciao {nome}! Ecco il promemoria e consenso del tuo appuntamento:\n📅 {data}\n🖋️ Tatuatore: {tatuatore}\n💶 Acconto: €{acconto}\n\n🔗 {link}",
+      messaggioPromemoria: DEFAULT_REMINDER_MESSAGE,
       messaggioCompleanno: DEFAULT_BIRTHDAY_MESSAGE
     };
 
@@ -836,6 +927,7 @@ Da {studio} ti regaliamo uno speciale buono sconto compleanno per il tuo prossim
       else if (action === "form") showView("form-view");
       else if (action === "bookings") openAdminSection("bookings");
       else if (action === "settings") openAdminSection("settings");
+      else if (action === "info") showView("info-view");
       else if (action === "logout") logoutAdmin();
     };
 
@@ -959,6 +1051,7 @@ Da {studio} ti regaliamo uno speciale buono sconto compleanno per il tuo prossim
       const setConsenso = document.getElementById("set-consenso-text");
       const setCare = document.getElementById("set-care-guide");
       const setWa = document.getElementById("set-wa-template");
+      const setReminder = document.getElementById("set-reminder-template");
       const setBday = document.getElementById("set-birthday-template");
 
       if (setStudioName) setStudioName.value = merged.nomeStudio;
@@ -967,6 +1060,7 @@ Da {studio} ti regaliamo uno speciale buono sconto compleanno per il tuo prossim
       if (setConsenso) setConsenso.value = merged.testoConsenso;
       if (setCare) setCare.value = merged.guidaCuraTatuaggio || DEFAULT_CARE_GUIDE;
       if (setWa) setWa.value = merged.messaggioWhatsApp;
+      if (setReminder) setReminder.value = merged.messaggioPromemoria || DEFAULT_REMINDER_MESSAGE;
       if (setBday) setBday.value = merged.messaggioCompleanno || DEFAULT_BIRTHDAY_MESSAGE;
     }
 
@@ -1035,6 +1129,7 @@ Da {studio} ti regaliamo uno speciale buono sconto compleanno per il tuo prossim
         testoConsenso: document.getElementById("set-consenso-text")?.value.trim() || DEFAULT_SETTINGS.testoConsenso,
         guidaCuraTatuaggio: document.getElementById("set-care-guide")?.value.trim() || DEFAULT_CARE_GUIDE,
         messaggioWhatsApp: document.getElementById("set-wa-template")?.value.trim() || DEFAULT_SETTINGS.messaggioWhatsApp,
+        messaggioPromemoria: document.getElementById("set-reminder-template")?.value.trim() || DEFAULT_REMINDER_MESSAGE,
         messaggioCompleanno: document.getElementById("set-birthday-template")?.value.trim() || DEFAULT_BIRTHDAY_MESSAGE,
         updatedAt: serverTimestamp()
       };
@@ -1263,10 +1358,52 @@ Da {studio} ti regaliamo uno speciale buono sconto compleanno per il tuo prossim
       document.getElementById('modal-compleanno').classList.add('hidden');
     };
 
+    function buildReminderMessage(booking) {
+      const tpl = studioSettings.messaggioPromemoria || DEFAULT_REMINDER_MESSAGE;
+      const formattedDate = booking.data_ora
+        ? new Date(booking.data_ora).toLocaleString('it-IT', {
+            weekday: 'short', day: '2-digit', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit'
+          })
+        : "--";
+      return tpl
+        .replaceAll("{nome}", booking.nome || "Cliente")
+        .replaceAll("{cognome}", booking.cognome || "")
+        .replaceAll("{data}", formattedDate)
+        .replaceAll("{tatuatore}", booking.tatuatore || "lo studio")
+        .replaceAll("{acconto}", String(booking.acconto ?? 0))
+        .replaceAll("{studio}", studioSettings.nomeStudio || DEFAULT_SETTINGS.nomeStudio);
+    }
+
+    window.openReminderModalById = (id) => {
+      const found = tomorrowBookings.find(b => b.id === id) || findBookingById(id);
+      if (!found) return;
+      const msg = buildReminderMessage(found);
+      const cleanPhone = (found.whatsapp || "").replace(/[^0-9]/g, '');
+      const dateStr = found.data_ora
+        ? new Date(found.data_ora).toLocaleString('it-IT', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' })
+        : "--";
+
+      document.getElementById('rem-client-name').textContent = `${found.nome} ${found.cognome}`;
+      document.getElementById('rem-client-info').textContent = `Appuntamento: ${dateStr} • Tatuatore: ${found.tatuatore}`;
+      document.getElementById('rem-client-phone').textContent = `WhatsApp: ${found.whatsapp || 'Non indicato'}`;
+      document.getElementById('rem-message-preview').textContent = msg;
+      document.getElementById('rem-wa-btn').href = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(msg)}`;
+      document.getElementById('modal-promemoria').classList.remove('hidden');
+    };
+
+    window.closeReminderModal = () => {
+      document.getElementById('modal-promemoria').classList.add('hidden');
+    };
+
     function getPeriodBounds(period) {
       const now = new Date();
       if (period === 'today') {
         const day = toLocalDateStr(now);
+        return { start: `${day}T00:00`, end: `${day}T23:59` };
+      }
+      if (period === 'tomorrow') {
+        const tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+        const day = toLocalDateStr(tomorrow);
         return { start: `${day}T00:00`, end: `${day}T23:59` };
       }
       if (period === 'week') {
@@ -1291,6 +1428,57 @@ Da {studio} ti regaliamo uno speciale buono sconto compleanno per il tuo prossim
       }
       return { start: null, end: null };
     }
+
+    window.loadHomeTomorrowBookings = async () => {
+      const summaryEl = document.getElementById('home-tomorrow-summary');
+      const listEl = document.getElementById('home-tomorrow-list');
+      if (!summaryEl || !listEl) return;
+
+      summaryEl.textContent = "Aggiornamento agenda di domani...";
+
+      try {
+        const { start, end } = getPeriodBounds('tomorrow');
+        const q = query(
+          collection(db, "appuntamenti"),
+          where("data_ora", ">=", start),
+          where("data_ora", "<=", end),
+          orderBy("data_ora", "asc")
+        );
+        const snapshot = await getDocs(q);
+        tomorrowBookings = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+
+        const totalDeposits = tomorrowBookings.reduce((sum, b) => sum + (Number(b.acconto) || 0), 0);
+        summaryEl.textContent = tomorrowBookings.length === 0
+          ? "Nessun appuntamento registrato per domani"
+          : `${tomorrowBookings.length} appuntament${tomorrowBookings.length === 1 ? 'o' : 'i'} domani • Caparre: € ${totalDeposits.toFixed(2)}`;
+
+        if (tomorrowBookings.length === 0) {
+          listEl.innerHTML = `<p class="text-xs studio-faint text-center py-3">Nessun cliente in programma domani.</p>`;
+          return;
+        }
+
+        listEl.innerHTML = tomorrowBookings.map(item => {
+          const timeStr = new Date(item.data_ora).toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
+          return `
+            <div class="border rounded-xl p-3 flex items-center justify-between gap-2 studio-elevated">
+              <div>
+                <div class="flex items-center gap-2">
+                  <span class="text-xs font-extrabold studio-accent-text">${timeStr}</span>
+                  <span class="font-bold text-sm studio-strong">${item.nome} ${item.cognome}</span>
+                </div>
+                <p class="text-[11px] studio-muted mt-0.5">Tatuatore: <strong>${item.tatuatore}</strong> • Acconto: €${item.acconto}</p>
+              </div>
+              <button type="button" onclick="openReminderModalById('${item.id}')" class="px-3 py-1.5 rounded-lg text-[11px] font-bold studio-accent-badge shrink-0">
+                Ricorda appuntamento
+              </button>
+            </div>
+          `;
+        }).join('');
+      } catch (err) {
+        summaryEl.textContent = "Impossibile caricare l'agenda di domani";
+        listEl.innerHTML = `<p class="text-xs text-red-500">${err.message}</p>`;
+      }
+    };
 
     window.loadHomeTodayBookings = async () => {
       const summaryEl = document.getElementById('home-today-summary');
@@ -1379,12 +1567,13 @@ Da {studio} ti regaliamo uno speciale buono sconto compleanno per il tuo prossim
 
     window.showView = (viewId) => {
       closeNavMenu();
-      ['login-view', 'home-view', 'form-view', 'ticket-view', 'admin-view'].forEach(id => {
+      ['login-view', 'home-view', 'form-view', 'ticket-view', 'admin-view', 'info-view'].forEach(id => {
         document.getElementById(id).classList.add('hidden');
       });
       document.getElementById(viewId).classList.remove('hidden');
       if (viewId === 'home-view') {
         loadHomeTodayBookings();
+        loadHomeTomorrowBookings();
       }
       if (viewId === 'admin-view') {
         loadAdminBookings();
@@ -1623,7 +1812,7 @@ Da {studio} ti regaliamo uno speciale buono sconto compleanno per il tuo prossim
     }
 
     function findBookingById(id) {
-      return loadedBookings.find(b => b.id === id) || todayBookings.find(b => b.id === id) || birthdayCandidates.find(b => b.id === id);
+      return loadedBookings.find(b => b.id === id) || todayBookings.find(b => b.id === id) || tomorrowBookings.find(b => b.id === id) || birthdayCandidates.find(b => b.id === id);
     }
 
     function buildCareWhatsAppUrl(booking) {
@@ -1708,6 +1897,7 @@ Da {studio} ti regaliamo uno speciale buono sconto compleanno per il tuo prossim
         await deleteDoc(doc(db, "appuntamenti", id));
         loadAdminBookings();
         loadHomeTodayBookings();
+        loadHomeTomorrowBookings();
       }
     };
 
