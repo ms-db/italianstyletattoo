@@ -137,7 +137,7 @@
         background-color: #ffffff !important;
         color: #000000 !important;
       }
-      #studio-nav, footer, main > section, #modal-compleanno, #modal-promemoria, #modal-consenso > div > :not(#print-consent-sheet) {
+      #studio-nav, footer, main > section, #modal-compleanno, #modal-promemoria, #modal-cambio-data, #modal-consenso > div > :not(#print-consent-sheet) {
         display: none !important;
       }
       #modal-consenso {
@@ -199,7 +199,7 @@
             <span class="studio-faint">⚙</span>
           </button>
           <button type="button" onclick="selectNavAction('info')" class="w-full text-left px-3.5 py-2.5 rounded-xl text-xs font-medium flex items-center justify-between mt-1 studio-chip">
-            <span>Info App & GDPR</span>
+            <span>Info App & Esporta</span>
             <span class="studio-faint">ⓘ</span>
           </button>
           <div class="border-t my-1.5 studio-divider"></div>
@@ -566,7 +566,7 @@
             2. Testi & WhatsApp
           </button>
           <button type="button" id="subtab-btn-profile" onclick="switchSettingsSubtab('profile')" class="py-2.5 px-2 rounded-xl text-xs font-medium studio-chip">
-            3. Profilo & Archivio
+            3. Profilo
           </button>
         </div>
 
@@ -653,40 +653,34 @@
           </div>
         </div>
 
-        <!-- SOTTOPAGINA C: PROFILO & ARCHIVIO -->
+        <!-- SOTTOPAGINA C: PROFILO (SOLO ACCOUNT + COLLABORATORE GOOGLE) -->
         <div id="settings-subtab-profile" class="hidden border rounded-2xl p-6 space-y-5 studio-card">
           <div class="border-b pb-3 studio-divider">
-            <h3 class="text-base font-bold studio-accent-text">Profilo Studio & Esportazione Archivio</h3>
-            <p class="text-xs studio-muted mt-0.5">Account collegato e backup completo su richiesta in un unico file</p>
+            <h3 class="text-base font-bold studio-accent-text">Profilo Account & Collaboratore</h3>
+            <p class="text-xs studio-muted mt-0.5">Dati account principale e secondo account Google per collaboratore</p>
           </div>
 
           <div class="border rounded-xl p-4 space-y-1.5 studio-elevated">
-            <p class="text-xs font-bold studio-strong">Account Google Admin Attivo</p>
+            <p class="text-xs font-bold studio-strong">Account Google Principale Attivo</p>
             <p id="profile-email-display" class="text-xs studio-muted">--</p>
             <p id="profile-uid-display" class="text-[11px] studio-faint">--</p>
           </div>
 
           <div class="border rounded-xl p-4 space-y-3 studio-soft">
             <div>
-              <p class="text-xs font-bold studio-strong">Esporta Tutti i Dati Archiviati (.json)</p>
-              <p class="text-[11px] studio-muted mt-0.5 leading-relaxed">
-                Esegue un'unica lettura mirata dell'archivio solo quando premi il pulsante e salva un file JSON completo (appuntamenti, date di nascita, documenti, note e configurazione studio).
-              </p>
+              <p class="text-xs font-bold studio-strong">Secondo Account Google (Collaboratore)</p>
+              <p class="text-[11px] studio-muted mt-0.5">Registra l'indirizzo Gmail del collaboratore autorizzato ad accedere allo studio</p>
             </div>
-
-            <div class="border rounded-xl p-3 space-y-1.5 studio-elevated">
-              <p class="text-[11px] font-bold studio-accent-text uppercase tracking-wider">Come gestire il backup del file .json</p>
-              <ul class="text-[11px] studio-muted space-y-1 list-disc pl-4 leading-relaxed">
-                <li><strong>Conservazione sicura:</strong> sposta il file scaricato (es. <code>archivio-studio-AAAA-MM-GG.json</code>) in una cartella protetta dello studio o su spazio cloud aziendale riservato, evitando cartelle condivise non protette o dispositivi pubblici.</li>
-                <li><strong>Cadenza consigliata:</strong> genera un backup periodico (settimanale o mensile) e rinomina o archivia le copie per data così da avere uno storico ordinato.</li>
-                <li><strong>Tutela dei dati (GDPR):</strong> il file contiene dati anagrafici e di contatto dei clienti; eliminalo o mettilo al sicuro se non serve più su un dispositivo locale.</li>
-              </ul>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label class="block text-[11px] studio-muted mb-1">Nome Collaboratore</label>
+                <input type="text" id="set-collab-name" placeholder="Es. Marco / Reception" class="w-full border rounded-xl px-3 py-2 text-xs focus:outline-none studio-input">
+              </div>
+              <div>
+                <label class="block text-[11px] studio-muted mb-1">Email Google Collaboratore</label>
+                <input type="email" id="set-collab-email" placeholder="collaboratore@gmail.com" class="w-full border rounded-xl px-3 py-2 text-xs focus:outline-none studio-input">
+              </div>
             </div>
-
-            <button type="button" id="btn-export-archive" onclick="downloadFullArchiveJson()" class="w-full py-3 px-4 rounded-xl text-xs font-bold studio-accent-btn transition">
-              Scarica Archivio Completo (.json)
-            </button>
-            <p id="export-archive-status" class="text-xs text-emerald-500 hidden"></p>
           </div>
         </div>
 
@@ -699,23 +693,75 @@
       </div>
     </section>
 
-    <!-- 5. INFO APP (RAGGIUNGIBILE SOLO DAL MENU A TENDINA) -->
-    <section id="info-view" class="hidden border rounded-3xl p-6 shadow-xl studio-card space-y-5">
-      <div class="flex items-center justify-between border-b pb-3 studio-divider">
-        <div>
-          <h2 class="text-xl font-extrabold studio-strong">Studio Desk - beta test</h2>
-          <p class="text-[11px] studio-faint mt-0.5">(ms-db.creator) copyright</p>
+    <!-- 5. INFO APP & ESPORTA DATI (RAGGIUNGIBILE DAL MENU A TENDINA) -->
+    <section id="info-view" class="hidden space-y-4">
+      <div class="border rounded-3xl p-6 shadow-xl studio-card space-y-5">
+        <div class="flex items-center justify-between border-b pb-3 studio-divider">
+          <div>
+            <h2 id="info-app-title" class="text-xl font-extrabold studio-strong">Studio Desk - Italian Style Tattoo</h2>
+            <p class="text-[10px] studio-faint mt-0.5">BETA TEST (ms-db.creator) Copyright 2026</p>
+          </div>
+          <button type="button" onclick="showView('home-view')" class="text-xs px-3 py-1.5 rounded-xl studio-chip">← Home</button>
         </div>
-        <button type="button" onclick="showView('home-view')" class="text-xs px-3 py-1.5 rounded-xl studio-chip">← Home</button>
+
+        <div class="border rounded-2xl p-4 space-y-2 studio-elevated">
+          <p class="text-xs font-bold uppercase tracking-wider studio-accent-text">Informazioni, Copyright & Privacy (GDPR)</p>
+          <p class="text-xs studio-muted leading-relaxed">
+            Tutti i dati, archivio e backup dell'app Studio Desk sono gestibili direttamente dall'account Firebase che è intestato e gestito direttamente dallo studio, che resta l'unico Titolare del trattamento dei dati ai fini della normativa privacy (GDPR).
+          </p>
+        </div>
       </div>
 
-      <div class="border rounded-2xl p-4 space-y-2 studio-elevated">
-        <p class="text-xs font-bold uppercase tracking-wider studio-accent-text">Informazioni, Copyright & Privacy (GDPR)</p>
-        <p class="text-xs studio-muted leading-relaxed">
-          Tutti i dati, archivio e backup dell'app Studio Desk sono gestibili direttamente dall'account Firebase che è intestato e gestito direttamente dallo studio, che resta l'unico Titolare del trattamento dei dati ai fini della normativa privacy (GDPR).
-        </p>
+      <!-- ESPORTA DATI SUBITO SOTTO LA SCHEDA INFORMATIVA -->
+      <div class="border rounded-3xl p-6 shadow-xl studio-card space-y-4">
+        <div>
+          <h3 class="text-base font-bold studio-accent-text">Esporta Tutti i Dati Archiviati (.json)</h3>
+          <p class="text-xs studio-muted mt-1 leading-relaxed">
+            Esegue un'unica lettura mirata dell'archivio solo quando premi il pulsante e salva un file JSON completo (appuntamenti, date di nascita, documenti, note e configurazione studio).
+          </p>
+        </div>
+
+        <div class="border rounded-xl p-3.5 space-y-1.5 studio-elevated">
+          <p class="text-[11px] font-bold studio-accent-text uppercase tracking-wider">Come gestire il backup del file .json</p>
+          <ul class="text-[11px] studio-muted space-y-1 list-disc pl-4 leading-relaxed">
+            <li><strong>Conservazione sicura:</strong> sposta il file scaricato (es. <code>archivio-studio-AAAA-MM-GG.json</code>) in una cartella protetta dello studio o su spazio cloud aziendale riservato, evitando cartelle condivise non protette o dispositivi pubblici.</li>
+            <li><strong>Cadenza consigliata:</strong> genera un backup periodico (settimanale o mensile) e rinomina o archivia le copie per data così da avere uno storico ordinato.</li>
+            <li><strong>Tutela dei dati (GDPR):</strong> il file contiene dati anagrafici e di contatto dei clienti; eliminalo o mettilo al sicuro se non serve più su un dispositivo locale.</li>
+          </ul>
+        </div>
+
+        <button type="button" id="btn-export-archive" onclick="downloadFullArchiveJson()" class="w-full py-3 px-4 rounded-xl text-xs font-bold studio-accent-btn transition">
+          Scarica Archivio Completo (.json)
+        </button>
+        <p id="export-archive-status" class="text-xs text-emerald-500 hidden"></p>
       </div>
     </section>
+
+    <!-- MODALE MODIFICA DATA / ORA APPUNTAMENTO -->
+    <div id="modal-cambio-data" class="hidden fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
+      <div class="border rounded-3xl max-w-md w-full p-6 space-y-4 shadow-2xl studio-card">
+        <div class="flex justify-between items-center border-b pb-3 studio-divider">
+          <h3 class="font-bold studio-accent-text text-sm">📅 Modifica Data Appuntamento</h3>
+          <button type="button" onclick="closeRescheduleModal()" class="text-sm px-2.5 py-1 rounded-lg studio-chip">✕ Chiudi</button>
+        </div>
+
+        <div class="border rounded-2xl p-3.5 space-y-1 studio-elevated">
+          <p id="resched-client-name" class="text-sm font-extrabold studio-strong">--</p>
+          <p id="resched-current-date" class="text-xs studio-muted">--</p>
+        </div>
+
+        <form id="reschedule-form" class="space-y-4">
+          <div>
+            <label class="block text-xs studio-muted mb-1">Nuovo Giorno e Ora *</label>
+            <input type="datetime-local" id="resched-new-datetime" required class="w-full border rounded-xl px-3.5 py-2.5 text-sm focus:outline-none studio-input">
+          </div>
+
+          <button type="submit" id="resched-save-btn" class="w-full py-3 px-4 rounded-xl text-xs font-bold studio-accent-btn transition">
+            Salva Nuova Data
+          </button>
+        </form>
+      </div>
+    </div>
 
     <!-- MODALE RICORDA APPUNTAMENTO -->
     <div id="modal-promemoria" class="hidden fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
@@ -832,7 +878,7 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-    import { getFirestore, collection, addDoc, getDoc, getDocs, setDoc, deleteDoc, doc, query, where, orderBy, limit, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, getDoc, getDocs, setDoc, updateDoc, deleteDoc, doc, query, where, orderBy, limit, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyBi03fdFCBpSUD8Lf5lBNw8Z-66Smse_q4",
@@ -853,6 +899,7 @@
     let tomorrowBookings = [];
     let birthdayCandidates = [];
     let currentModalBooking = null;
+    let reschedulingBookingId = null;
     const urlParams = new URLSearchParams(window.location.search);
     const ticketIdParam = urlParams.get('ticket');
 
@@ -887,7 +934,9 @@ Da {studio} ti regaliamo uno speciale buono sconto compleanno per il tuo prossim
       guidaCuraTatuaggio: DEFAULT_CARE_GUIDE,
       messaggioWhatsApp: "Ciao {nome}! Ecco il promemoria e consenso del tuo appuntamento:\n📅 {data}\n🖋️ Tatuatore: {tatuatore}\n💶 Acconto: €{acconto}\n\n🔗 {link}",
       messaggioPromemoria: DEFAULT_REMINDER_MESSAGE,
-      messaggioCompleanno: DEFAULT_BIRTHDAY_MESSAGE
+      messaggioCompleanno: DEFAULT_BIRTHDAY_MESSAGE,
+      nomeCollaboratore: "",
+      emailCollaboratore: ""
     };
 
     let studioSettings = { ...DEFAULT_SETTINGS };
@@ -1022,12 +1071,14 @@ Da {studio} ti regaliamo uno speciale buono sconto compleanno per il tuo prossim
       const homeSub = document.getElementById("home-studio-subtitle");
       const loginTitle = document.getElementById("login-studio-title");
       const sheetTitle = document.getElementById("sheet-studio-title");
+      const infoAppTitle = document.getElementById("info-app-title");
 
       if (navName) navName.textContent = cleanName;
       if (homeName) homeName.textContent = cleanName;
       if (homeSub) homeSub.textContent = cleanSub;
       if (loginTitle) loginTitle.textContent = cleanName;
       if (sheetTitle) sheetTitle.textContent = cleanName;
+      if (infoAppTitle) infoAppTitle.textContent = `Studio Desk - ${cleanName}`;
     }
 
     function applyStudioSettingsToUI(settings) {
@@ -1053,6 +1104,8 @@ Da {studio} ti regaliamo uno speciale buono sconto compleanno per il tuo prossim
       const setWa = document.getElementById("set-wa-template");
       const setReminder = document.getElementById("set-reminder-template");
       const setBday = document.getElementById("set-birthday-template");
+      const setCollabName = document.getElementById("set-collab-name");
+      const setCollabEmail = document.getElementById("set-collab-email");
 
       if (setStudioName) setStudioName.value = merged.nomeStudio;
       if (setStudioSub) setStudioSub.value = merged.sottotitoloStudio;
@@ -1062,6 +1115,8 @@ Da {studio} ti regaliamo uno speciale buono sconto compleanno per il tuo prossim
       if (setWa) setWa.value = merged.messaggioWhatsApp;
       if (setReminder) setReminder.value = merged.messaggioPromemoria || DEFAULT_REMINDER_MESSAGE;
       if (setBday) setBday.value = merged.messaggioCompleanno || DEFAULT_BIRTHDAY_MESSAGE;
+      if (setCollabName) setCollabName.value = merged.nomeCollaboratore || "";
+      if (setCollabEmail) setCollabEmail.value = merged.emailCollaboratore || "";
     }
 
     async function loadStudioSettings() {
@@ -1105,7 +1160,7 @@ Da {studio} ti regaliamo uno speciale buono sconto compleanno per il tuo prossim
       document.getElementById("subtab-btn-profile").className =
         subtab === "profile" ? "py-2.5 px-2 rounded-xl text-xs font-bold studio-accent-btn" : "py-2.5 px-2 rounded-xl text-xs font-medium studio-chip";
 
-      document.getElementById("settings-save-bar").classList.toggle("hidden", subtab === "profile");
+      document.getElementById("settings-save-bar").classList.remove("hidden");
     };
 
     window.openAdminSection = (tab) => {
@@ -1131,6 +1186,8 @@ Da {studio} ti regaliamo uno speciale buono sconto compleanno per il tuo prossim
         messaggioWhatsApp: document.getElementById("set-wa-template")?.value.trim() || DEFAULT_SETTINGS.messaggioWhatsApp,
         messaggioPromemoria: document.getElementById("set-reminder-template")?.value.trim() || DEFAULT_REMINDER_MESSAGE,
         messaggioCompleanno: document.getElementById("set-birthday-template")?.value.trim() || DEFAULT_BIRTHDAY_MESSAGE,
+        nomeCollaboratore: document.getElementById("set-collab-name")?.value.trim() || "",
+        emailCollaboratore: document.getElementById("set-collab-email")?.value.trim().toLowerCase() || "",
         updatedAt: serverTimestamp()
       };
 
@@ -1357,6 +1414,53 @@ Da {studio} ti regaliamo uno speciale buono sconto compleanno per il tuo prossim
     window.closeBirthdayModal = () => {
       document.getElementById('modal-compleanno').classList.add('hidden');
     };
+
+    window.openRescheduleModalById = (id) => {
+      const found = findBookingById(id);
+      if (!found) return;
+      reschedulingBookingId = id;
+      const currentStr = found.data_ora
+        ? new Date(found.data_ora).toLocaleString('it-IT', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' })
+        : "--";
+
+      document.getElementById('resched-client-name').textContent = `${found.nome} ${found.cognome} (${found.tatuatore})`;
+      document.getElementById('resched-current-date').textContent = `Data attuale: ${currentStr}`;
+      document.getElementById('resched-new-datetime').value = found.data_ora || "";
+      document.getElementById('modal-cambio-data').classList.remove('hidden');
+    };
+
+    window.closeRescheduleModal = () => {
+      reschedulingBookingId = null;
+      document.getElementById('modal-cambio-data').classList.add('hidden');
+    };
+
+    document.getElementById('reschedule-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (!reschedulingBookingId) return;
+      const newDateVal = document.getElementById('resched-new-datetime')?.value;
+      if (!newDateVal) return;
+
+      const btn = document.getElementById('resched-save-btn');
+      btn.disabled = true;
+      btn.textContent = "Aggiornamento...";
+
+      try {
+        await updateDoc(doc(db, "appuntamenti", reschedulingBookingId), {
+          data_ora: newDateVal
+        });
+        closeRescheduleModal();
+        await loadAdminBookings();
+        if (!document.getElementById('home-view').classList.contains('hidden')) {
+          await loadHomeTodayBookings();
+          await loadHomeTomorrowBookings();
+        }
+      } catch (err) {
+        alert("Errore aggiornamento data: " + err.message);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "Salva Nuova Data";
+      }
+    });
 
     function buildReminderMessage(booking) {
       const tpl = studioSettings.messaggioPromemoria || DEFAULT_REMINDER_MESSAGE;
@@ -1797,6 +1901,7 @@ Da {studio} ti regaliamo uno speciale buono sconto compleanno per il tuo prossim
                 ${item.signature ? '<p class="text-[11px] text-emerald-500 mt-1 cursor-pointer hover:underline" onclick="viewConsensoById(\''+item.id+'\')">✓ Consenso firmato (Clicca per vedere)</p>' : '<p class="text-[11px] studio-faint mt-1">Nessuna firma</p>'}
               </div>
               <div class="flex flex-wrap gap-2">
+                <button type="button" onclick="openRescheduleModalById('${item.id}')" class="px-3 py-1.5 rounded-lg text-xs font-medium studio-chip border studio-divider">Cambia data</button>
                 ${item.signature ? `<button type="button" onclick="viewConsensoById('${item.id}')" class="px-3 py-1.5 rounded-lg text-xs font-medium studio-accent-badge">Consenso</button>` : ''}
                 <button type="button" onclick="openTicketById('${item.id}')" class="px-3 py-1.5 rounded-lg text-xs studio-chip">QR / Info</button>
               </div>
