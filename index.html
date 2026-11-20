@@ -299,7 +299,7 @@
         <div id="home-today-list" class="space-y-2.5"></div>
       </div>
 
-      <!-- APPUNTAMENTI DI DOMANI & RICORDA APPUNTAMENTO -->
+      <!-- APPUNTAMENTI DI DOMANI & RICORDA -->
       <div id="home-tomorrow-card" class="border rounded-2xl p-5 space-y-3 studio-card">
         <div class="flex items-center justify-between gap-2 border-b pb-3 studio-divider">
           <div class="min-w-0">
@@ -1602,16 +1602,16 @@ Da {studio} ti regaliamo uno speciale buono sconto compleanno per il tuo prossim
         listEl.innerHTML = tomorrowBookings.map(item => {
           const timeStr = new Date(item.data_ora).toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
           return `
-            <div class="border rounded-xl p-3 flex flex-wrap sm:flex-nowrap items-center justify-between gap-2.5 studio-elevated">
+            <div class="border rounded-xl p-3 flex items-center justify-between gap-3 studio-elevated">
               <div class="min-w-0 flex-1">
-                <div class="flex items-baseline gap-2 flex-wrap">
+                <div class="flex items-center gap-2 min-w-0">
+                  <span class="font-bold text-sm studio-strong truncate">${item.nome} ${item.cognome}</span>
                   <span class="text-xs font-extrabold studio-accent-text shrink-0">${timeStr}</span>
-                  <span class="font-bold text-sm studio-strong">${item.nome} ${item.cognome}</span>
                 </div>
-                <p class="text-[11px] studio-muted mt-0.5">Tatuatore: <strong>${item.tatuatore}</strong> • Acconto: €${item.acconto}</p>
+                <p class="text-[11px] studio-muted mt-0.5 truncate">${item.tatuatore} • Acconto: €${item.acconto}</p>
               </div>
-              <button type="button" onclick="openReminderModalById('${item.id}')" class="px-3 py-1.5 rounded-lg text-[11px] font-bold studio-accent-badge shrink-0 whitespace-nowrap">
-                Ricorda appuntamento
+              <button type="button" onclick="openReminderModalById('${item.id}')" class="px-3 py-1.5 rounded-lg text-xs font-bold studio-accent-badge shrink-0 whitespace-nowrap">
+                Ricorda
               </button>
             </div>
           `;
