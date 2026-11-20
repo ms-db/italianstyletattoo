@@ -49,6 +49,7 @@
     .studio-page {
       background-color: var(--bg-page) !important;
       color: var(--text-main) !important;
+      overflow-x: hidden;
     }
 
     .studio-nav {
@@ -176,7 +177,7 @@
       </button>
 
       <div class="relative shrink-0" id="nav-dropdown-wrapper">
-        <button type="button" id="nav-menu-btn" onclick="toggleNavMenu(event)" aria-expanded="false" class="px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-2 shadow-sm studio-accent-btn transition">
+        <button type="button" id="nav-menu-btn" onclick="toggleNavMenu(event)" aria-expanded="false" class="px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-2 shadow-sm studio-accent-btn transition whitespace-nowrap">
           <span>Menu</span>
           <span id="nav-menu-arrow" class="text-[10px]">▾</span>
         </button>
@@ -212,7 +213,7 @@
     </div>
   </nav>
 
-  <main class="max-w-xl w-full mx-auto p-4 pt-6 pb-8 flex-1">
+  <main class="max-w-xl w-full mx-auto p-4 pt-6 pb-8 flex-1 overflow-x-hidden">
 
     <!-- 1. LOGIN (SOLO GOOGLE) -->
     <section id="login-view" class="hidden border rounded-2xl p-6 shadow-xl mt-10 studio-card">
@@ -254,7 +255,7 @@
             <span class="block text-base font-extrabold">+ Nuovo Appuntamento & Consenso</span>
             <span class="block text-xs opacity-85 mt-0.5">Registra cliente, acquisisci firma e genera QR</span>
           </div>
-          <span class="text-2xl font-bold">→</span>
+          <span class="text-2xl font-bold shrink-0 ml-2">→</span>
         </button>
 
         <div class="grid grid-cols-2 gap-3">
@@ -274,12 +275,12 @@
 
       <!-- OGGI È IL COMPLEANNO DI... -->
       <div id="home-birthday-card" class="border border-amber-500/40 rounded-2xl p-5 space-y-3 studio-card">
-        <div class="flex items-center justify-between border-b pb-2.5 studio-divider">
-          <div>
+        <div class="flex items-center justify-between gap-2 border-b pb-2.5 studio-divider">
+          <div class="min-w-0">
             <h2 class="text-sm font-bold studio-accent-text uppercase tracking-wider">Oggi è il compleanno di…</h2>
             <p id="home-birthday-subtitle" class="text-xs studio-muted mt-0.5">Controllo automatico sui clienti registrati</p>
           </div>
-          <span class="text-lg">🎂</span>
+          <span class="text-lg shrink-0">🎂</span>
         </div>
         <div id="home-birthday-list" class="space-y-2">
           <p class="text-xs studio-faint">Nessun compleanno oggi tra gli appuntamenti caricati.</p>
@@ -288,24 +289,24 @@
 
       <!-- OGGI IN STUDIO -->
       <div class="border rounded-2xl p-5 space-y-3 studio-card">
-        <div class="flex items-center justify-between border-b pb-3 studio-divider">
-          <div>
+        <div class="flex items-center justify-between gap-2 border-b pb-3 studio-divider">
+          <div class="min-w-0">
             <h2 class="text-sm font-bold studio-strong uppercase tracking-wider">Oggi in Studio</h2>
             <p id="home-today-summary" class="text-xs studio-muted mt-0.5">Caricamento agenda di oggi...</p>
           </div>
-          <button type="button" onclick="loadHomeTodayBookings()" class="px-2.5 py-1 rounded-lg text-[11px] font-medium studio-chip">Aggiorna</button>
+          <button type="button" onclick="loadHomeTodayBookings()" class="px-2.5 py-1.5 rounded-lg text-[11px] font-medium studio-chip shrink-0 whitespace-nowrap">Aggiorna</button>
         </div>
         <div id="home-today-list" class="space-y-2.5"></div>
       </div>
 
       <!-- APPUNTAMENTI DI DOMANI & RICORDA APPUNTAMENTO -->
       <div id="home-tomorrow-card" class="border rounded-2xl p-5 space-y-3 studio-card">
-        <div class="flex items-center justify-between border-b pb-3 studio-divider">
-          <div>
+        <div class="flex items-center justify-between gap-2 border-b pb-3 studio-divider">
+          <div class="min-w-0">
             <h2 class="text-sm font-bold studio-accent-text uppercase tracking-wider">Appuntamenti di Domani</h2>
             <p id="home-tomorrow-summary" class="text-xs studio-muted mt-0.5">Caricamento agenda di domani...</p>
           </div>
-          <button type="button" onclick="loadHomeTomorrowBookings()" class="px-2.5 py-1 rounded-lg text-[11px] font-medium studio-chip">Aggiorna</button>
+          <button type="button" onclick="loadHomeTomorrowBookings()" class="px-2.5 py-1.5 rounded-lg text-[11px] font-medium studio-chip shrink-0 whitespace-nowrap">Aggiorna</button>
         </div>
         <div id="home-tomorrow-list" class="space-y-2.5"></div>
       </div>
@@ -970,7 +971,6 @@ Da {studio} ti regaliamo uno speciale buono sconto compleanno per il tuo prossim
       const mainEmail = (MAIN_ADMIN_EMAIL || "").trim().toLowerCase();
       const collabEmail = (studioSettings.emailCollaboratore || "").trim().toLowerCase();
 
-      // Se MAIN_ADMIN_EMAIL non è ancora impostata in codice, si appoggia all'account Google o al collaboratore configurato
       if (!mainEmail) {
         return !collabEmail || currentEmail === collabEmail || Boolean(currentEmail);
       }
@@ -1417,12 +1417,12 @@ Da {studio} ti regaliamo uno speciale buono sconto compleanno per il tuo prossim
 
       subEl.textContent = `${birthdayCandidates.length} client${birthdayCandidates.length === 1 ? 'e compie' : 'i compiono'} gli anni oggi — clicca per inviare gli auguri`;
       listEl.innerHTML = birthdayCandidates.map(item => `
-        <button type="button" onclick="openBirthdayModalById('${item.id}')" class="w-full text-left border border-amber-500/30 rounded-xl p-3 flex items-center justify-between gap-2 studio-elevated hover:brightness-105 transition">
-          <div>
-            <span class="font-bold text-sm studio-strong">🎉 ${item.nome} ${item.cognome}</span>
-            <p class="text-[11px] studio-muted mt-0.5">Nato/a il ${formatBirthDateItalian(item.data_nascita)} • ${item.whatsapp || ''}</p>
+        <button type="button" onclick="openBirthdayModalById('${item.id}')" class="w-full text-left border border-amber-500/30 rounded-xl p-3 flex items-center justify-between gap-3 studio-elevated hover:brightness-105 transition">
+          <div class="min-w-0 flex-1">
+            <span class="font-bold text-sm studio-strong block truncate">🎉 ${item.nome} ${item.cognome}</span>
+            <p class="text-[11px] studio-muted mt-0.5 truncate">Nato/a il ${formatBirthDateItalian(item.data_nascita)} • ${item.whatsapp || ''}</p>
           </div>
-          <span class="px-2.5 py-1 rounded-lg text-[11px] font-bold studio-accent-badge shrink-0">Auguri</span>
+          <span class="px-3 py-1.5 rounded-lg text-[11px] font-bold studio-accent-badge shrink-0 whitespace-nowrap">Auguri</span>
         </button>
       `).join('');
     }
@@ -1602,17 +1602,17 @@ Da {studio} ti regaliamo uno speciale buono sconto compleanno per il tuo prossim
         listEl.innerHTML = tomorrowBookings.map(item => {
           const timeStr = new Date(item.data_ora).toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
           return `
-            <div class="border rounded-xl p-3 flex items-center justify-between gap-2 studio-elevated">
-              <div>
-                <div class="flex items-center gap-2">
-                  <span class="text-xs font-extrabold studio-accent-text">${timeStr}</span>
+            <div class="border rounded-xl p-3 flex flex-wrap sm:flex-nowrap items-center justify-between gap-2.5 studio-elevated">
+              <div class="min-w-0 flex-1">
+                <div class="flex items-baseline gap-2 flex-wrap">
+                  <span class="text-xs font-extrabold studio-accent-text shrink-0">${timeStr}</span>
                   <span class="font-bold text-sm studio-strong">${item.nome} ${item.cognome}</span>
                 </div>
                 <p class="text-[11px] studio-muted mt-0.5">Tatuatore: <strong>${item.tatuatore}</strong> • Acconto: €${item.acconto}</p>
               </div>
-              <button type="button" onclick="openReminderModalById('${item.id}')" class="px-3 py-1.5 rounded-lg text-[11px] font-bold studio-accent-badge shrink-0">
+              <button type="button" onclick="openReminderModalById('${item.id}')" class="px-3 py-1.5 rounded-lg text-[11px] font-bold studio-accent-badge shrink-0 whitespace-nowrap">
                 Ricorda appuntamento
-              </button>https://mail.google.com/mail/u/6/#inbox
+              </button>
             </div>
           `;
         }).join('');
@@ -1662,17 +1662,17 @@ Da {studio} ti regaliamo uno speciale buono sconto compleanno per il tuo prossim
         listEl.innerHTML = todayBookings.map(item => {
           const timeStr = new Date(item.data_ora).toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
           return `
-            <div class="border rounded-xl p-3 flex items-center justify-between gap-2 studio-elevated">
-              <div>
-                <div class="flex items-center gap-2">
-                  <span class="text-xs font-extrabold studio-accent-text">${timeStr}</span>
+            <div class="border rounded-xl p-3 flex flex-wrap sm:flex-nowrap items-center justify-between gap-2.5 studio-elevated">
+              <div class="min-w-0 flex-1">
+                <div class="flex items-baseline gap-2 flex-wrap">
+                  <span class="text-xs font-extrabold studio-accent-text shrink-0">${timeStr}</span>
                   <span class="font-bold text-sm studio-strong">${item.nome} ${item.cognome}</span>
                 </div>
                 <p class="text-[11px] studio-muted mt-0.5">Tatuatore: <strong>${item.tatuatore}</strong> • Acconto: €${item.acconto}</p>
               </div>
               <div class="flex gap-1.5 shrink-0">
-                ${item.signature ? `<button onclick="viewConsensoById('${item.id}')" class="px-2.5 py-1.5 rounded-lg text-[11px] font-medium studio-accent-badge">Consenso</button>` : ''}
-                <button onclick="openTicketById('${item.id}')" class="px-2.5 py-1.5 rounded-lg text-[11px] studio-chip">QR</button>
+                ${item.signature ? `<button onclick="viewConsensoById('${item.id}')" class="px-2.5 py-1.5 rounded-lg text-[11px] font-medium studio-accent-badge whitespace-nowrap">Consenso</button>` : ''}
+                <button onclick="openTicketById('${item.id}')" class="px-2.5 py-1.5 rounded-lg text-[11px] studio-chip whitespace-nowrap">QR</button>
               </div>
             </div>
           `;
@@ -1951,7 +1951,7 @@ Da {studio} ti regaliamo uno speciale buono sconto compleanno per il tuo prossim
         return `
           <div class="border p-4 rounded-2xl flex flex-col gap-3 studio-card">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-              <div>
+              <div class="min-w-0 flex-1">
                 <span class="font-bold studio-strong">${item.nome} ${item.cognome}</span>
                 <span class="text-xs px-2 py-0.5 rounded ml-2 studio-accent-badge">${item.tatuatore}</span>
                 ${minorBadge}
@@ -1960,10 +1960,10 @@ Da {studio} ti regaliamo uno speciale buono sconto compleanno per il tuo prossim
                 ${item.data_nascita ? `<p class="text-[11px] studio-faint mt-0.5">Nascita: ${formatBirthDateItalian(item.data_nascita)}</p>` : ''}
                 ${item.signature ? '<p class="text-[11px] text-emerald-500 mt-1 cursor-pointer hover:underline" onclick="viewConsensoById(\''+item.id+'\')">✓ Consenso firmato (Clicca per vedere)</p>' : '<p class="text-[11px] studio-faint mt-1">Nessuna firma</p>'}
               </div>
-              <div class="flex flex-wrap gap-2">
-                <button type="button" onclick="openRescheduleModalById('${item.id}')" class="px-3 py-1.5 rounded-lg text-xs font-medium studio-chip border studio-divider">Cambia data</button>
-                ${item.signature ? `<button type="button" onclick="viewConsensoById('${item.id}')" class="px-3 py-1.5 rounded-lg text-xs font-medium studio-accent-badge">Consenso</button>` : ''}
-                <button type="button" onclick="openTicketById('${item.id}')" class="px-3 py-1.5 rounded-lg text-xs studio-chip">QR / Info</button>
+              <div class="flex flex-wrap gap-2 shrink-0">
+                <button type="button" onclick="openRescheduleModalById('${item.id}')" class="px-3 py-1.5 rounded-lg text-xs font-medium studio-chip border studio-divider whitespace-nowrap">Cambia data</button>
+                ${item.signature ? `<button type="button" onclick="viewConsensoById('${item.id}')" class="px-3 py-1.5 rounded-lg text-xs font-medium studio-accent-badge whitespace-nowrap">Consenso</button>` : ''}
+                <button type="button" onclick="openTicketById('${item.id}')" class="px-3 py-1.5 rounded-lg text-xs studio-chip whitespace-nowrap">QR / Info</button>
               </div>
             </div>
             <div class="flex justify-end pt-2 border-t studio-divider">
