@@ -2,7 +2,7 @@
 <html lang="it" data-theme="dark">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta id="meta-viewport" name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Italian Style Tattoo - Prenotazioni & Consenso</title>
   <link rel="icon" type="image/png" sizes="32x32" href="favicon.png" />
   <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
@@ -950,6 +950,28 @@ Da {studio} ti regaliamo uno speciale buono sconto compleanno per il tuo prossim
 
     let studioSettings = { ...DEFAULT_SETTINGS };
     const systemThemeQuery = window.matchMedia("(prefers-color-scheme: dark)");
+
+    (function configureStandaloneZoom() {
+      const isStandalone =
+        window.matchMedia('(display-mode: standalone)').matches ||
+        window.navigator.standalone === true;
+
+      if (!isStandalone) return;
+
+      const vp = document.getElementById('meta-viewport');
+      if (vp) {
+        vp.setAttribute(
+          'content',
+          'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no'
+        );
+      }
+
+      document.body.style.touchAction = 'manipulation';
+
+      document.addEventListener('gesturestart', (e) => e.preventDefault(), { passive: false });
+      document.addEventListener('gesturechange', (e) => e.preventDefault(), { passive: false });
+      document.addEventListener('gestureend', (e) => e.preventDefault(), { passive: false });
+    })();
 
     function showLoginError(message) {
       const errEl = document.getElementById('login-error');
